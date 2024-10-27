@@ -1,0 +1,47 @@
+services:
+  client:
+    container_name: client
+    networks:
+      - host-bridge
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile.client
+    ports:
+      - 5173:5173
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/client
+          target: /usr/src/app/client
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: ./apps/client/package.json
+    depends_on:
+      - server
+  server:
+    networks:
+      - host-bridge
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile.server
+    ports:
+      - 1209:1209
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/server
+          target: /usr/src/app/core-api
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: ./apps/server/package.json
+    env_file:
+      - .env
+
+networks:
+  host-bridge:
+    driver: bridge

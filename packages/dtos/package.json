@@ -1,0 +1,31 @@
+{
+    "name": "@repo/dtos",
+    "version": "1.0.0",
+    "description": "The data transfer objects for auvo.",
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "nest build",
+        "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+        "check-types": "tsc --noEmit"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@nestjs/cli": "^10.0.0",
+        "typescript": "^5.6.3"
+    },
+    "dependencies": {
+        "@digitalcredentials/bitstring": "^3.1.2",
+        "@nestjs/swagger": "^7.3.1",
+        "@sphereon/pex-models": "2.0.3",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.1"
+    },
+    "main": "./src/index.ts",
+    "exports": {
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+    }
+}
