@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { Card, CloseButton } from 'flowbite-svelte';
-	import Button from '../ui/Button.svelte';
-
-	// export let selectedDoc: string;
+	import { Card } from 'flowbite-svelte';
 </script>
 
 <Card class="min-w-[450px] shadow-xl h-[calc(100vh-130px)]">

@@ -10,7 +10,7 @@
 >
 	<div class="flex gap-2 items-center">
 		<Logo></Logo>
-		<h1 class="text-2xl font-semibold select-none text-gray-700">Syner</h1>
+		<h1 class="text-2xl font-semibold select-none text-gray-700">VCV</h1>
 	</div>
 	<div class="w-2/5">
 		<Search
@@ -19,6 +19,6 @@
 		></Search>
 	</div>
 	<div>
-		<Button color="yellow" on on:click={() => goto('/new-document')}>Create New Document</Button>
+		<Button color="yellow" on on:click={() => goto('/new-vcv')}>Create New VCV</Button>
 	</div>
 </header>
