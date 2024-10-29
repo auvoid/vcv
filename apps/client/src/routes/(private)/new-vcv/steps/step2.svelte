@@ -1,55 +1,53 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/Button.svelte';
-	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import { Avatar, Card, Modal } from 'flowbite-svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 
-	let showCredModal: boolean = false;
+	export let intro: string;
+	export let email: string;
+	export let phoneNum: number;
+	export let github: string;
+	export let linkedin: string;
+	export let skills: string[];
 </script>
 
-<div class="flex flex-col gap-2">
-	<div class="flex gap-5">
-		<Checkbox></Checkbox>
-		<Card padding="xs">
-			<div class="flex gap-5 justify-between items-center">
-				<div class="flex gap-3">
-					<Avatar rounded size="md" class="object-cover" src="" />
-					<div class="flex flex-col border-b-gray-300">
-						<h3 class="text-md font-semibold text-gray-500">National ID</h3>
-						<p class="text-sm">The Government</p>
-					</div>
-				</div>
-				<div>
-					<Button color="light-blue" on:click={() => (showCredModal = true)}>View</Button>
-				</div>
-			</div>
-		</Card>
+<h1 class="text-2xl font-bold text-gray-700 mb-5">New VCV</h1>
+<div class="w-full flex flex-col gap-3">
+	<div class="">
+		<Input variant="email" label="Email" placeholder="name@example.com" bind:value={email} />
+	</div>
+	<div class="">
+		<Input variant="phone" label="Phone Number" placeholder="9876543210" bind:value={phoneNum} />
+	</div>
+	<div class="">
+		<Input
+			variant="url"
+			label="Github"
+			placeholder="https://github.com/ananyayaya129"
+			bind:value={github}
+		/>
+	</div>
+	<div class="">
+		<Input
+			variant="url"
+			label="LinkedIn"
+			placeholder="https://www.linkedin.com/in/ananyarana0411"
+			bind:value={linkedin}
+		/>
+	</div>
+	<div class="">
+		<Input
+			variant="text"
+			label="Write a short introduction for this VCV"
+			placeholder="My introduction"
+			bind:value={intro}
+		/>
+	</div>
+	<div>
+		<Input
+			variant="email"
+			label="Enter Skills"
+			helperText="Enter the skills you want to showcase here"
+			placeholder="UI/UX, Design, etc...."
+			bind:value={skills}
+		></Input>
 	</div>
 </div>
-
-<Modal title="View Credential" bind:open={showCredModal}>
-	<div class="flex flex-col gap-4">
-		<div class="flex gap-4 items-center">
-			<Avatar rounded size="lg" class="object-cover" src="" />
-			<div>
-				<h1 class="text-2xl font-bold text-gray-600">National ID</h1>
-				<p>Issued by: <spam class="font-semibold"> The Government</spam></p>
-			</div>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-	</div>
-</Modal>

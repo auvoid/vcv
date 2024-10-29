@@ -29,6 +29,7 @@
 				<TableHeadCell>Credential Type</TableHeadCell>
 				<TableHeadCell>Issued By</TableHeadCell>
 				<TableHeadCell>Created At</TableHeadCell>
+				<TableHeadCell></TableHeadCell>
 			</TableHead>
 			<TableBody>
 				<TableBodyRow>
@@ -38,6 +39,10 @@
 					<TableBodyCell>
 						<div class="flex justify-between">
 							{moment().format('DD MMM YYYY')}
+						</div>
+					</TableBodyCell>
+					<TableBodyCell>
+						<div class="flex justify-between">
 							<button class="text-primary-500 hover:text-primary-600">
 								<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
 								<Dropdown border class="py-2">
