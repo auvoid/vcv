@@ -33,15 +33,15 @@
 			</TableHead>
 			<TableBody>
 				<TableBodyRow>
-					<TableBodyCell>National ID</TableBodyCell>
-					<TableBodyCell>Verifible Credential</TableBodyCell>
-					<TableBodyCell>The Government</TableBodyCell>
-					<TableBodyCell>
+					<TableBodyCell class="text-gray-600">National ID</TableBodyCell>
+					<TableBodyCell class="text-gray-600">Verifible Credential</TableBodyCell>
+					<TableBodyCell class="text-gray-600">The Government</TableBodyCell>
+					<TableBodyCell class="text-gray-600">
 						<div class="flex justify-between">
 							{moment().format('DD MMM YYYY')}
 						</div>
 					</TableBodyCell>
-					<TableBodyCell>
+					<TableBodyCell class="text-gray-600">
 						<div class="flex justify-between">
 							<button class="text-primary-500 hover:text-primary-600">
 								<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />

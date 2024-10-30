@@ -135,7 +135,7 @@
 										<Tooltip type="light"><p class="text-xs">Verified by VCV</p></Tooltip>
 										<div class="flex gap-3">
 											<div class="flex flex-col">
-												<h3 class="text-md font-semibold text-gray-700">BTech</h3>
+												<h3 class="text-sm font-semibold text-gray-700">BTech</h3>
 												<p class="text-xs">Panjab University</p>
 												<p class="text-xs">Aug 2021 - Aug 2025</p>
 											</div>
@@ -148,7 +148,7 @@
 										<Tooltip type="light"><p class="text-xs">Verification Pending</p></Tooltip>
 										<div class="flex gap-3">
 											<div class="flex flex-col">
-												<h3 class="text-md font-semibold text-gray-700">10+2</h3>
+												<h3 class="text-sm font-semibold text-gray-700">10+2</h3>
 												<p class="text-xs">Some Shitty School</p>
 												<p class="text-xs">Aug 2020 - Aug 2021</p>
 											</div>
@@ -167,7 +167,7 @@
 										<Tooltip type="light"><p class="text-xs">Verification Failed</p></Tooltip>
 										<div class="flex gap-3">
 											<div class="flex flex-col">
-												<h3 class="text-md font-semibold text-gray-700">Internship in some role</h3>
+												<h3 class="text-sm font-semibold text-gray-700">Internship in some role</h3>
 												<p class="text-xs">Amazing Company</p>
 												<p class="text-xs">Apr 2023 - Sep 2023</p>
 											</div>

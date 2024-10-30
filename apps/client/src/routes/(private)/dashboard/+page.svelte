@@ -41,9 +41,9 @@
 			<TableBody>
 				{#if creds}
 					<TableBodyRow>
-						<TableBodyCell>The CV</TableBodyCell>
-						<TableBodyCell>{moment().format('DD MMM YYYY')}</TableBodyCell>
-						<TableBodyCell>
+						<TableBodyCell class="text-gray-600">The CV</TableBodyCell>
+						<TableBodyCell class="text-gray-600">{moment().format('DD MMM YYYY')}</TableBodyCell>
+						<TableBodyCell class="text-gray-600">
 							<div class="flex justify-between">
 								<Badge color="green">Completed</Badge>
 								<button class="text-primary-500 hover:text-primary-600">
