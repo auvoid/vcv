@@ -159,9 +159,9 @@
 						<Hr hrClass="h-px my-2 bg-gray-300 border-0" />
 						<div>
 							<h1 class="font-semibold text-lg text-gray-700">Education</h1>
-							<div class="flex flex-col gap-2">
+							<div class="flex flex-col gap-2 mt-4">
 								<Card padding="xs" shadow={false} border={false} class="max-w-full">
-									<div class="flex items-center gap-2">
+									<div class="flex items-center gap-2 -translate-y-1">
 										<CheckCircleSolid class="text-brand-green"></CheckCircleSolid>
 										<Tooltip type="light"><p class="text-xs">Verified by VCV</p></Tooltip>
 										<div class="flex gap-3">
@@ -174,7 +174,7 @@
 									</div>
 								</Card>
 								<Card padding="xs" shadow={false} border={false} class="max-w-full">
-									<div class="flex gap-2 items-center">
+									<div class="flex gap-2 items-center -translate-y-1">
 										<ExclamationCircleSolid class="text-brand-yellow"></ExclamationCircleSolid>
 										<Tooltip type="light"><p class="text-xs">Verification Pending</p></Tooltip>
 										<div class="flex gap-3">
@@ -191,9 +191,9 @@
 						<Hr hrClass="h-px my-3 bg-gray-300 border-0 dark:bg-gray-700" />
 						<div>
 							<h1 class="font-semibold text-lg text-gray-700">Experience</h1>
-							<div class="flex flex-col gap-2">
+							<div class="flex flex-col gap-2 mt-4">
 								<Card padding="xs" shadow={false} border={false} class="max-w-full">
-									<div class="flex gap-2 items-center">
+									<div class="flex gap-2 items-center -translate-y-1">
 										<CloseCircleSolid class="text-red-400"></CloseCircleSolid>
 										<Tooltip type="light"><p class="text-xs">Verification Failed</p></Tooltip>
 										<div class="flex gap-3">
