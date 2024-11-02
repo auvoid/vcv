@@ -1,6 +1,6 @@
 <script lang="ts">
 </script>
 
-<div>
+<main class="flex gap-5 max-w-full">
 	<slot></slot>
-</div>
+</main>

@@ -31,7 +31,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-3 w-full">
 	<h1 class="flex self-center text-3xl text-gray-600 font-semibold">Login</h1>
 	<div>
 		<Input variant="email" label="Email" placeholder="example@gmail.com" bind:value={email}></Input>

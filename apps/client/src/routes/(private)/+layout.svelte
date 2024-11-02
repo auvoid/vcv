@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/fragments/Header.svelte';
-	import Sidebar from '$lib/components/ui/Sidebar.svelte';
+	import Sidebar from '$lib/components/fragments/Sidebar.svelte';
 </script>
 
 <div class="w-full">

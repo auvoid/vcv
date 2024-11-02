@@ -37,7 +37,7 @@
 		<DocPreviewBar>
 			<div class="flex flex-col h-full justify-between max-w-full">
 				<div class="flex flex-col gap-4">
-					<h1 class="font-bold text-md dark:text-white">
+					<h1 class="font-bold text-md">
 						{#if isSigned}
 							Document Signed!
 						{:else}
