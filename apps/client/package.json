@@ -30,6 +30,7 @@
 		"flowbite-svelte": "^0.47.1",
 		"flowbite-svelte-icons": "^1.6.2",
 		"globals": "^15.0.0",
+		"html2pdf.js": "^0.10.2",
 		"mdsvex": "^0.11.2",
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.6",
@@ -43,6 +44,7 @@
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.8",
-		"axios": "^1.7.7"
+		"axios": "^1.7.7",
+		"moment": "^2.30.1"
 	}
 }

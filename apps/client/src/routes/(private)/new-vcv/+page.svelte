@@ -17,6 +17,8 @@
 	import Step4 from './steps/step4.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import Step5 from './steps/step5.svelte';
 
 	let step = 0;
 	let vcvName: string;
@@ -29,6 +31,10 @@
 	let linkedin: string;
 	let skills: string[];
 
+	let makePdf: HTMLDivElement;
+
+	let handlePdfSave: () => void;
+
 	function handleGoBack() {
 		if (step === 0) {
 			goto('/dashboard');
@@ -40,6 +46,22 @@
 	function handleContinue() {
 		step++;
 	}
+
+	onMount(async () => {
+		const html2pdf = (await import('html2pdf.js')).default;
+
+		let html2PdfWorker = html2pdf();
+		handlePdfSave = () => {
+			let opt = {
+				margin: [0, 0, 0, 0],
+				filename: 'YourVCV.pdf',
+				image: { type: 'png' },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'mm', format: 'a4', orientation: 'p', putOnlyUsedFonts: true }
+			};
+			html2PdfWorker.from(makePdf).set(opt).save();
+		};
+	});
 </script>
 
 <main class="flex gap-5 min-w-full">
@@ -54,24 +76,30 @@
 					<Step3></Step3>
 				{:else if step === 3}
 					<Step4></Step4>
+				{:else if step === 4}
+					<Step5 onSavePdfClick={handlePdfSave}></Step5>
 				{/if}
 			</div>
 			<div class="flex w-full justify-between items-center">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div class="flex w-full cursor-pointer text-sm" on:click={handleGoBack}>
-					<ChevronLeftOutline></ChevronLeftOutline>Go Back
-				</div>
-				<div class="w-full flex justify-end">
-					<Button color="yellow" on:click={handleContinue}>Continue</Button>
-				</div>
+				{#if step > 0}
+					<div class="flex w-full cursor-pointer text-sm" on:click={handleGoBack}>
+						<ChevronLeftOutline></ChevronLeftOutline>Go Back
+					</div>
+				{/if}
+				{#if step < 4}
+					<div class="w-full flex justify-end">
+						<Button color="yellow" on:click={handleContinue}>Continue</Button>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</Card>
 	<Card padding="lg" class="max-w-[60%] overflow-x-hidden shadow-xl h-[calc(100vh-130px)]">
 		<div class="flex flex-col max-w-full gap-4 items-start">
 			<h1 class="font-bold text-gray-950 text-md">{vcvName ?? 'My VCV'}</h1>
-			<div class="flex flex-col items-center self-center">
+			<div class="flex flex-col items-center self-center w-full h-full" bind:this={makePdf}>
 				<div class="aspect-[1/1.414] min-w-[595px] flex">
 					<div
 						class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center"

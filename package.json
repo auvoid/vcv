@@ -15,10 +15,5 @@
     "format": "pnpm -F=* format",
     "lint": "pnpm -F=* lint",
     "dev": "docker compose -f ./dev.docker-compose.yml up"
-  },
-  "dependencies": {
-    "html2pdf": "^0.0.11",
-    "jspdf": "^2.5.2",
-    "moment": "^2.30.1"
   }
 }
