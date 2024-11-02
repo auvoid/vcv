@@ -7,3 +7,4 @@ export * from './types/oid4vc/SiopOffer';
 export * from './types/oid4vc/TokenRequest';
 export * from './types/oid4vc/TokenResponse';
 export * from './types/user';
+export * from './types/cv/cv';

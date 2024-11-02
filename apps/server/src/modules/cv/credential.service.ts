@@ -8,33 +8,33 @@ import {
   FindManyOptions,
   DeepPartial,
 } from 'typeorm';
-import { Session } from '../../entities';
+import { Credential } from '../../entities/credential';
 
 @Injectable()
-export class SessionsService {
+export class CredentialsService {
   constructor(
-    @InjectRepository(Session) private repository: Repository<Session>,
+    @InjectRepository(Credential) private repository: Repository<Credential>,
   ) {}
 
-  async create(entity: DeepPartial<Session>): Promise<Session> {
+  async create(entity: DeepPartial<Credential>): Promise<Credential> {
     const entityCreate = this.repository.create(entity);
     await this.repository.save(entityCreate);
     return entityCreate;
   }
 
-  async createBulk(entities: DeepPartial<Session>[]): Promise<Session[]> {
+  async createBulk(entities: DeepPartial<Credential>[]): Promise<Credential[]> {
     const entitiesCreate = this.repository.create(entities);
     await this.repository.save(entitiesCreate);
     return entitiesCreate;
   }
 
   async findMany(
-    options: FindOptionsWhere<Session>,
-    relations: FindOptionsRelations<Session> = {},
-    order: FindOptionsOrder<Session> = {},
+    options: FindOptionsWhere<Credential>,
+    relations: FindOptionsRelations<Credential> = {},
+    order: FindOptionsOrder<Credential> = {},
     paginate: { take: number; skip: number } | null = null,
-  ): Promise<Session[]> {
-    const searchParams: FindManyOptions<Session> = {
+  ): Promise<Credential[]> {
+    const searchParams: FindManyOptions<Credential> = {
       where: options,
       relations,
       order,
@@ -48,12 +48,12 @@ export class SessionsService {
   }
 
   async findManyAndCount(
-    options: FindOptionsWhere<Session>,
-    relations: FindOptionsRelations<Session> = {},
-    order: FindOptionsOrder<Session> = {},
+    options: FindOptionsWhere<Credential>,
+    relations: FindOptionsRelations<Credential> = {},
+    order: FindOptionsOrder<Credential> = {},
     paginate: { take: number; skip: number } | null = null,
-  ): Promise<[Session[], number]> {
-    const searchParams: FindManyOptions<Session> = {
+  ): Promise<[Credential[], number]> {
+    const searchParams: FindManyOptions<Credential> = {
       where: options,
       relations,
       order,
@@ -67,9 +67,9 @@ export class SessionsService {
   }
 
   async findOne(
-    options: FindOptionsWhere<Session>,
-    relations: FindOptionsRelations<Session> = {},
-  ): Promise<Session> {
+    options: FindOptionsWhere<Credential>,
+    relations: FindOptionsRelations<Credential> = {},
+  ): Promise<Credential> {
     const entity = await this.repository.findOne({
       where: options,
       relations,
@@ -79,10 +79,10 @@ export class SessionsService {
 
   async findById(
     id: string,
-    relations: FindOptionsRelations<Session> = {},
-  ): Promise<Session> {
+    relations: FindOptionsRelations<Credential> = {},
+  ): Promise<Credential> {
     const entity = await this.repository.findOne({
-      where: { id } as unknown as FindOptionsWhere<Session>,
+      where: { id } as unknown as FindOptionsWhere<Credential>,
       relations,
     });
     return entity;
@@ -90,8 +90,8 @@ export class SessionsService {
 
   async findByIdAndUpdate(
     id: string,
-    entity: Partial<Session>,
-  ): Promise<Session> {
+    entity: Partial<Credential>,
+  ): Promise<Credential> {
     const current = await this.findById(id);
     const toSave = this.repository.create({
       ...current,

@@ -18,7 +18,4 @@ export class Experience extends BaseEntity {
 
   @Column()
   jobTitle: string;
-
-  @ManyToMany(() => CV, (e) => e.experiences)
-  cvs: CV[];
 }

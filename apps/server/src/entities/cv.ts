@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Credential } from './credential';
 import { Experience } from './experience';
@@ -8,6 +8,9 @@ import { User } from './user';
 export class CV extends BaseEntity {
   @Column()
   name: string;
+
+  @Column()
+  cvName: string;
 
   @Column()
   title: string;
@@ -28,8 +31,6 @@ export class CV extends BaseEntity {
   user: User;
 
   @ManyToMany(() => Credential, (e) => e.cvs)
+  @JoinTable()
   credentials: Credential[];
-
-  @ManyToMany(() => Experience, (e) => e.cvs)
-  experiences: Experience[];
 }
