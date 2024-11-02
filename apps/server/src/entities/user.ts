@@ -12,6 +12,7 @@ import {
 import { hash, verify } from 'argon2';
 import { BaseEntity } from './base-entity';
 import { Session } from './session';
+import { CV } from './cv';
 
 @Entity()
 export class User extends BaseEntity {
@@ -29,6 +30,9 @@ export class User extends BaseEntity {
 
   @Column({ default: false, nullable: false })
   emailVerified: boolean;
+
+  @OneToMany(() => CV, (e) => e.user)
+  cvs: CV[];
 
   private tempPassword: string;
   @AfterLoad()

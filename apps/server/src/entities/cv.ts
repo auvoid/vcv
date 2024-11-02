@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Credential } from './credential';
 import { Experience } from './experience';
+import { User } from './user';
 
 @Entity()
 export class CV extends BaseEntity {
@@ -22,6 +23,9 @@ export class CV extends BaseEntity {
 
   @Column()
   type: 'education' | 'experience';
+
+  @ManyToOne(() => User, (e) => e.cvs)
+  user: User;
 
   @ManyToMany(() => Credential, (e) => e.cvs)
   credentials: Credential[];
