@@ -14,7 +14,7 @@ export class CV extends BaseEntity {
   @Column({ type: 'text' })
   bio: string;
 
-  @Column()
+  @Column({ type: 'text', array: true })
   skills: string[];
 
   @Column({ type: 'jsonb' })

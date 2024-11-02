@@ -8,8 +8,8 @@ export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: false,
-  entities: [join(__dirname, 'dist/entities/**/*.js')],
-  migrations: [join(__dirname, 'dist/migrations/**/*.ts')],
+  entities: [join(__dirname, '../entities/**/*.js')],
+  migrations: [join(__dirname, './migrations/**/*.js')],
   ssl:
     process.env.ENV_TYPE !== 'dev'
       ? {
