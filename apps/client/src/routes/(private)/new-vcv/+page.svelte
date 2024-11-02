@@ -56,7 +56,7 @@
 				margin: [0, 0, 0, 0],
 				filename: 'YourVCV.pdf',
 				image: { type: 'png' },
-				html2canvas: { scale: 2 },
+				html2canvas: { scale: 3 },
 				jsPDF: { unit: 'mm', format: 'a4', orientation: 'p', putOnlyUsedFonts: true }
 			};
 			html2PdfWorker.from(makePdf).set(opt).save();
@@ -99,8 +99,11 @@
 	<Card padding="lg" class="max-w-[60%] overflow-x-hidden shadow-xl h-[calc(100vh-130px)]">
 		<div class="flex flex-col max-w-full gap-4 items-start">
 			<h1 class="font-bold text-gray-950 text-md">{vcvName ?? 'My VCV'}</h1>
-			<div class="flex flex-col items-center self-center w-full h-full" bind:this={makePdf}>
-				<div class="aspect-[1/1.414] min-w-[595px] flex">
+			<div
+				class="flex flex-col items-center self-center w-full h-full min-h-[842px] aspect-[1/1.414] min-w-[595px]"
+				bind:this={makePdf}
+			>
+				<div class="flex w-full h-full">
 					<div
 						class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center"
 					>
