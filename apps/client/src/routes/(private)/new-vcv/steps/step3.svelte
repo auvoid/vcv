@@ -4,11 +4,6 @@
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { formatDid } from '$lib/util/did';
 	import { Avatar, Card, Modal, Tooltip, Badge } from 'flowbite-svelte';
-	import {
-		CheckCircleSolid,
-		CloseCircleSolid,
-		ExclamationCircleSolid
-	} from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 
 	let showCredModal: boolean = false;
@@ -69,7 +64,7 @@
 					</div>
 					<div>
 						<Button
-							color="light-blue"
+							color="white"
 							on:click={() => {
 								showCredModal = true;
 								cred = credential;

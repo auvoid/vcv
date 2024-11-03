@@ -58,7 +58,7 @@
 			</TableBody>
 		</Table>
 		<div class="flex gap-2 mt-4">
-			<Button color="yellow" on:click={() => handleAccept(true)}>Approve Experience</Button>
+			<Button color="purple" on:click={() => handleAccept(true)}>Approve Experience</Button>
 			<Button color="white" on:click={() => handleAccept(false)}>Reject Experience</Button>
 		</div>
 	{/if}

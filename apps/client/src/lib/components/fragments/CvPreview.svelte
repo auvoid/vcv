@@ -22,30 +22,33 @@
 	<div class="aspect-[1/1.414] min-w-[595px] flex">
 		<div class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center">
 			<div>
-				<div>
-					<h1 class="font-semibold text-lg text-gray-50 mb-1">Contact</h1>
-					<div class="flex flex-col gap-[3px]">
-						<div class="text-xs font-medium text-gray-300">
-							{#if email}
-								<div class="flex items-center gap-1">
-									<EnvelopeSolid></EnvelopeSolid>{email}
-								</div>
-							{/if}
-							{#if phoneNum}
-								<div class="flex items-center gap-1">
-									<PhoneSolid></PhoneSolid>{phoneNum}
-								</div>
-							{/if}
+				{#if email || phoneNum || linkedin}
+					<div>
+						<h1 class="font-semibold text-lg text-gray-50 mb-1">Contact</h1>
 
-							{#if linkedin}
-								<div class="flex items-center gap-1">
-									<LinkedinSolid></LinkedinSolid>{linkedin}
-								</div>
-							{/if}
+						<div class="flex flex-col gap-[3px]">
+							<div class="text-xs font-medium text-gray-300">
+								{#if email}
+									<div class="flex items-center gap-1">
+										<EnvelopeSolid></EnvelopeSolid>{email}
+									</div>
+								{/if}
+								{#if phoneNum}
+									<div class="flex items-center gap-1">
+										<PhoneSolid></PhoneSolid>{phoneNum}
+									</div>
+								{/if}
+
+								{#if linkedin}
+									<div class="flex items-center gap-1">
+										<LinkedinSolid></LinkedinSolid>{linkedin}
+									</div>
+								{/if}
+							</div>
 						</div>
 					</div>
-				</div>
-				<Hr hrClass="h-px my-4 bg-gray-500 border-0" />
+					<Hr hrClass="h-px my-4 bg-gray-500 border-0" />
+				{/if}
 				<h1 class="font-semibold text-lg text-gray-50 mb-1">About</h1>
 				<div class="text-xs text-gray-200">
 					{intro}

@@ -17,20 +17,12 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
-	import {
-		CheckCircleSolid,
-		DotsHorizontalOutline,
-		ExclamationCircleSolid
-	} from 'flowbite-svelte-icons';
+	import { DotsHorizontalOutline, ExclamationCircleSolid } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 	import { onMount } from 'svelte';
 
 	let selectedDoc: boolean;
-	let docName: string;
-	let signingParties: string[];
-	let isSigned: boolean;
 	let cvs: Record<string, any>[];
-
 	let selectedCv: Record<string, any>;
 
 	async function handleDelete(id: string) {
@@ -76,7 +68,6 @@
 												>Edit VCV</DropdownItem
 											>
 											<DropdownItem on:click={() => handleDelete(cv.id)}>Delete VCV</DropdownItem>
-											<DropdownItem>Download VCV</DropdownItem>
 										</Dropdown>
 									</button>
 								</div>
@@ -84,12 +75,12 @@
 						</TableBodyRow>
 					{/each}
 				{:else}
-					<TableBodyCell colspan={5}>
+					<TableBodyCell colspan={2}>
 						<div class="flex w-full flex-col items-center gap-4 px-10 py-[22px]">
 							<ExclamationCircleSolid class="h-[100px] w-[100px] text-gray-600"
 							></ExclamationCircleSolid>
 							<p>You don't have any VCVs yet. Create one right now!</p>
-							<Button color="yellow" on on:click={() => goto('/new-vcv')}>Create New VCV</Button>
+							<Button color="purple" on on:click={() => goto('/new-vcv')}>Create New VCV</Button>
 						</div>
 					</TableBodyCell>
 				{/if}
@@ -110,10 +101,8 @@
 					email={selectedCv.contacts.email}
 					cvId={selectedCv.id}
 				></CvPreview>
-			{:else if !cvs}
-				<p class="w-full py-8 text-center">You don't have any VCV to view yet :(</p>
-			{:else if !selectedDoc}
-				<p class="w-full py-8 text-center">Please Select a CV to view</p>
+			{:else}
+				<p class="w-full py-8 text-center">Please select a CV to view</p>
 			{/if}
 		</DocPreviewBar>
 	</div>

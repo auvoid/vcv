@@ -20,12 +20,12 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
-	import { DotsHorizontalOutline } from 'flowbite-svelte-icons';
+	import { DotsHorizontalOutline, ExclamationCircleSolid } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 	import { onMount } from 'svelte';
 	import { formatDid } from '$lib/util/did';
+	import { goto } from '$app/navigation';
 
-	let selected: boolean = false;
 	let selectedCredential: Record<string, any>;
 	let showAssignCredModal = false;
 	let showShareCredModal = false;
@@ -48,8 +48,6 @@
 		showAssignCredModal = true;
 	}
 
-	$: createAssignmentMap(credentials);
-
 	async function handleShareCredentials() {
 		const {
 			data: { uri }
@@ -67,8 +65,6 @@
 		};
 	}
 
-	$: console.log(credentialAssignmentsMap);
-
 	async function handleSaveAssignment() {
 		await apiClient.patch('/credentials', credentialAssignmentsMap);
 		await fetchCredentials();
@@ -83,11 +79,16 @@
 	onMount(() => {
 		fetchCredentials();
 	});
+
+	$: createAssignmentMap(credentials);
+	$: console.log(credentialAssignmentsMap);
 </script>
 
 <Modal bind:open={showShareCredModal} title="Add More Credentials">
 	{#if qr}
-		<Qr data={qr}></Qr>
+		<div class="flex flex-col justify-center items-center">
+			<Qr data={qr}></Qr>
+		</div>
 	{/if}
 </Modal>
 
@@ -117,7 +118,7 @@
 			<h1 class="text-3xl font-bold text-gray-700 mb-10">Your Credentials</h1>
 			<div class="flex gap-2">
 				<Button color="white" on:click={handleShowAssignmentModal}>Edit Credential Types</Button>
-				<Button on:click={handleShareCredentials}>Add more credentials</Button>
+				<Button color="purple" on:click={handleShareCredentials}>Add more credentials</Button>
 			</div>
 		</div>
 		<Table divClass="w-full" striped>
@@ -129,33 +130,46 @@
 				<TableHeadCell></TableHeadCell>
 			</TableHead>
 			<TableBody>
-				{#each credentials as credential (credential.id)}
-					<TableBodyRow>
-						<TableBodyCell class="text-gray-600">{credential.name}</TableBodyCell>
-						<TableBodyCell class="text-gray-600">{credential.type ?? 'Uncategorized'}</TableBodyCell
-						>
-						<TableBodyCell class="text-gray-600">{formatDid(credential.decoded.iss)}</TableBodyCell>
-						<TableBodyCell class="text-gray-600">
-							<div class="flex justify-between">
-								{credential.decoded.exp
-									? moment(credential.decoded.exp * 1000).format('DD MMM YYYY')
-									: "Doesn't Expire"}
-							</div>
-						</TableBodyCell>
-						<TableBodyCell class="text-gray-600">
-							<div class="flex justify-between">
-								<button class="text-primary-500 hover:text-primary-600">
-									<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
-									<Dropdown border class="py-2">
-										<DropdownItem on:click={() => (selectedCredential = credential)}
-											>View Credential</DropdownItem
-										>
-									</Dropdown>
-								</button>
-							</div>
-						</TableBodyCell>
-					</TableBodyRow>
-				{/each}
+				{#if credentials.length > 0}
+					{#each credentials as credential (credential.id)}
+						<TableBodyRow>
+							<TableBodyCell class="text-gray-600">{credential.name}</TableBodyCell>
+							<TableBodyCell class="text-gray-600"
+								>{credential.type ?? 'Uncategorized'}</TableBodyCell
+							>
+							<TableBodyCell class="text-gray-600"
+								>{formatDid(credential.decoded.iss)}</TableBodyCell
+							>
+							<TableBodyCell class="text-gray-600">
+								<div class="flex justify-between">
+									{credential.decoded.exp
+										? moment(credential.decoded.exp * 1000).format('DD MMM YYYY')
+										: "Doesn't Expire"}
+								</div>
+							</TableBodyCell>
+							<TableBodyCell class="text-gray-600">
+								<div class="flex justify-between">
+									<button class="text-primary-500 hover:text-primary-600">
+										<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
+										<Dropdown border class="py-2">
+											<DropdownItem on:click={() => (selectedCredential = credential)}
+												>View Credential</DropdownItem
+											>
+										</Dropdown>
+									</button>
+								</div>
+							</TableBodyCell>
+						</TableBodyRow>
+					{/each}
+				{:else}
+					<TableBodyCell colspan={5}>
+						<div class="flex w-full flex-col items-center gap-4 px-10 py-[22px]">
+							<ExclamationCircleSolid class="h-[100px] w-[100px] text-gray-600"
+							></ExclamationCircleSolid>
+							<p>You don't have any Credentials yet.</p>
+						</div>
+					</TableBodyCell>
+				{/if}
 			</TableBody>
 		</Table>
 	</Card>
