@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./docker/dev/Dockerfile.client
     ports:
-      - 5173:5173
+      - 51733:5173
     env_file:
       - .env
     develop:
@@ -30,7 +30,7 @@ services:
       context: .
       dockerfile: ./docker/dev/Dockerfile.server
     ports:
-      - 1209:1209
+      - 12923:1209
     develop:
       watch:
         - action: sync
@@ -56,7 +56,7 @@ services:
     volumes:
       - ~/data/vcv/db:/var/lib/postgresql/data
     ports:
-      - 5434:5432
+      - 5433:5432
 
 networks:
   host-bridge:
