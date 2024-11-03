@@ -5,6 +5,9 @@ import { UsersModule } from './modules/users/users.module';
 import { Oid4vcModule } from './modules/oid4vc/oid4vc.module';
 import { EmailModule } from './modules/email/email.module';
 import { GlobalModule } from './modules/global/global.module';
+import { CVModule } from './modules/cv/cv.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CurrentUserInterceptor } from './guards/auth.guard';
 
 @Module({
   imports: [
@@ -13,8 +16,14 @@ import { GlobalModule } from './modules/global/global.module';
     Oid4vcModule,
     EmailModule,
     GlobalModule,
+    CVModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CurrentUserInterceptor,
+    },
+  ],
 })
 export class AppModule {}

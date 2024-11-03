@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { apiClient } from '$lib/axios/axios';
 	import DocPreviewBar from '$lib/components/fragments/DocPreviewBar.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
@@ -21,12 +22,18 @@
 		ExclamationCircleSolid
 	} from 'flowbite-svelte-icons';
 	import moment from 'moment';
+	import { onMount } from 'svelte';
 
 	let selectedDoc: boolean;
 	let docName: string;
 	let signingParties: string[];
 	let isSigned: boolean;
-	let creds: string[];
+	let cvs: string[];
+
+	onMount(async () => {
+		const { data } = await apiClient.get('/cv');
+		cvs = data;
+	});
 </script>
 
 <main class="flex gap-5">
@@ -39,7 +46,7 @@
 				<TableHeadCell>Status</TableHeadCell>
 			</TableHead>
 			<TableBody>
-				{#if creds}
+				{#if cvs && cvs.length > 0}
 					<TableBodyRow>
 						<TableBodyCell class="text-gray-600">The CV</TableBodyCell>
 						<TableBodyCell class="text-gray-600">{moment().format('DD MMM YYYY')}</TableBodyCell>
@@ -121,7 +128,7 @@
 						<Button buttonClass="w-full" color="yellow">View Document</Button>
 					</div>
 				</div>
-			{:else if !creds}
+			{:else if !cvs}
 				<p class="w-full py-8 text-center">You don't have any VCV to view yet :(</p>
 			{:else if !selectedDoc}
 				<p class="w-full py-8 text-center">Please Select a Document to view</p>

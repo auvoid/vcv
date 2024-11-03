@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -18,7 +19,7 @@ import {
 import { wsServer } from '../../main';
 import { IdentityService } from '../../services/identity.service';
 import { UserSession } from '../../decorators/UserSession';
-import { Session } from '../../entities';
+import { Session, User } from '../../entities';
 import { SiopOfferService } from './siopOffer.service';
 import { CredOfferService } from './credOffer.service';
 import { UsersService } from '../users/users.service';
@@ -33,7 +34,35 @@ import {
 } from '@repo/dtos';
 import { DataSource } from 'typeorm';
 import { Serialize } from 'src/middlewares/interceptors/serialize.interceptors';
-import { PresentationDefinitionV2 } from '@sphereon/pex-models';
+import { PresentationDefinitionV2, Rules } from '@sphereon/pex-models';
+import { IsAuthenticated } from 'src/guards/auth.guard';
+import { CurrentUser } from 'src/decorators';
+import { CredentialsService } from '../credential/credential.service';
+
+const presentationDefinition = {
+  id: 'all-credentials-request',
+  purpose:
+    "To gather all available verifiable credentials from the holder's wallet",
+  input_descriptors: [
+    {
+      id: `all-vcs`,
+      constraints: {
+        fields: [
+          {
+            path: ['$.vc.type'],
+            filter: {
+              type: 'array',
+              contains: {
+                type: 'string',
+                pattern: 'VerifiableCredential',
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
 
 @ApiTags('OpenID')
 @ApiExcludeController()
@@ -43,16 +72,19 @@ export class Oid4vcController {
     private identityService: IdentityService,
     private siopOfferService: SiopOfferService,
     private credOfferService: CredOfferService,
+    private credentialsService: CredentialsService,
     private usersService: UsersService,
-    private sessionsService: SessionsService,
-    private dataSource: DataSource,
   ) {}
 
   @Serialize(SiopOfferDTO)
   @ApiOkResponse({ type: SiopOfferDTO })
-  @Get('/siop')
-  async newSiopRequest(@UserSession() session: Session) {
-    const state = session.id;
+  @IsAuthenticated()
+  @Get('/pex')
+  async newSiopRequest(
+    @UserSession() session: Session,
+    @CurrentUser() user: User,
+  ) {
+    const state = `${user.id}::${session.id}`;
     const siopRequest = await (
       await this.identityService.getAdminDid()
     ).rp.createRequest({
@@ -62,7 +94,8 @@ export class Oid4vcController {
         `/api/oid4vc/siop/${session.id}`,
         process.env.PUBLIC_BASE_URI,
       ).toString(),
-      responseType: 'id_token',
+      responseType: 'vp_token',
+      presentationDefinition,
     });
 
     const offerExists = await this.siopOfferService.findById(session.id);
@@ -302,13 +335,39 @@ export class Oid4vcController {
 
   @ApiBody({ type: SiopRequestDTO })
   @Post('/auth')
-  async verifyAuthResponse(@Body() body: SiopRequestDTO) {
+  async verifyAuthResponse(@Body() body: Record<string, any>) {
     const { state } = body;
+    if (typeof body.presentation_submission === 'string')
+      body.presentation_submission = JSON.parse(body.presentation_submission);
     const { id_token: idToken, vp_token: vpToken } = body;
+    const { rp } = await this.identityService.getAdminDid();
     if (idToken) {
-      const { rp } = await this.identityService.getAdminDid();
       await rp.verifyAuthResponse(body);
-      const { iss } = await rp.validateJwt(idToken);
+      // const { iss } = await rp.validateJwt(idToken);
+    } else {
+      await rp.verifyAuthResponse(body, presentationDefinition);
+      const {
+        vp: { verifiableCredential },
+      } = await rp.validateJwt(vpToken);
+      const [userId, sessionId] = state.split('::');
+      const user = await this.usersService.findById(userId);
+      if (!user) throw new UnauthorizedException();
+      const credentialsParsed = await Promise.all(
+        verifiableCredential.map(async (raw) => {
+          const decodedVc = await rp.validateJwt(raw);
+          return {
+            name: decodedVc.vc.type[1] ?? decodedVc.vc.type[0],
+            decoded: decodedVc,
+            raw,
+            user,
+          };
+        }),
+      );
+      const credentials =
+        await this.credentialsService.createBulk(credentialsParsed);
+      console.log(credentials);
+
+      wsServer.broadcast(sessionId, { success: true });
     }
   }
 }

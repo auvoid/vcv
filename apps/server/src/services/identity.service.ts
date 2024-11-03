@@ -106,7 +106,10 @@ export class IdentityService {
     const kid = document.verificationMethod[0].id;
     const signer = await this.buildSigner(config.seed);
     const rp = new RelyingParty({
-      redirectUri: `${process.env.PUBLIC_BASE_URI}/oid4vc/auth`,
+      redirectUri: new URL(
+        '/api/oid4vc/auth',
+        process.env.PUBLIC_BASE_URI,
+      ).toString(),
       resolver,
       did: account.getDid(),
       kid,
@@ -208,10 +211,9 @@ export class IdentityService {
     const identity = await this.newDid({
       alias,
       seed,
-      method: 'web',
+      method: 'key',
     }).catch(async (e) => {
       if (!e.message.includes('Alias already exists')) {
-        console.log(e);
         throw new Error('500::Unable to create identity');
       }
       const did = await this.getDid({ alias });

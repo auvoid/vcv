@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.8",
-		"axios": "^1.7.7"
+		"axios": "^1.7.7",
+		"svelte-qrcode-action": "^1.0.2"
 	}
 }

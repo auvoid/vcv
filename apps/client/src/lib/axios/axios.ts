@@ -33,6 +33,7 @@ let embedClient = Axios.create({
 });
 
 token.subscribe((_token) => {
+	console.log('setting token here', _token);
 	apiClient = Axios.create({
 		baseURL: PUBLIC_BASE_URI,
 		withCredentials: true,

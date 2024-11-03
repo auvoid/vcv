@@ -18,14 +18,8 @@ export class CV extends BaseEntity {
   @Column({ type: 'text' })
   bio: string;
 
-  @Column({ type: 'text', array: true })
-  skills: string[];
-
   @Column({ type: 'jsonb' })
   contacts: { linkedin: string; email: string; phone: string };
-
-  @Column()
-  type: 'education' | 'experience';
 
   @ManyToOne(() => User, (e) => e.cvs)
   user: User;

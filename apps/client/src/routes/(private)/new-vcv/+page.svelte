@@ -17,6 +17,7 @@
 	import Step4 from './steps/step4.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { apiClient } from '$lib/axios/axios';
 
 	let step = 0;
 	let vcvName: string;
@@ -24,7 +25,7 @@
 	let role: string;
 	let intro: string;
 	let email: string;
-	let phoneNum: number;
+	let phoneNum: string;
 	let github: string;
 	let linkedin: string;
 	let skills: string[];
@@ -37,8 +38,19 @@
 		}
 	}
 
-	function handleContinue() {
-		step++;
+	async function handleContinue() {
+		console.log(step);
+		if (step < 4) return step++;
+		// logic to create new CV
+		const { data } = await apiClient.post('/cv', {
+			name,
+			cvName: vcvName,
+			title: role,
+			bio: intro,
+			skills,
+			contacts: { linkedin, email, phone: phoneNum },
+			credentials: []
+		});
 	}
 </script>
 

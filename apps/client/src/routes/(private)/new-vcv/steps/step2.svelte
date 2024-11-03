@@ -3,7 +3,7 @@
 
 	export let intro: string;
 	export let email: string;
-	export let phoneNum: number;
+	export let phoneNum: string;
 	export let github: string;
 	export let linkedin: string;
 	export let skills: string[];

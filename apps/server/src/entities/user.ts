@@ -13,6 +13,7 @@ import { hash, verify } from 'argon2';
 import { BaseEntity } from './base-entity';
 import { Session } from './session';
 import { CV } from './cv';
+import { Credential } from './credential';
 
 @Entity()
 export class User extends BaseEntity {
@@ -33,6 +34,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => CV, (e) => e.user)
   cvs: CV[];
+
+  @OneToMany(() => Credential, (e) => e.user)
+  credentials: Credential[];
 
   private tempPassword: string;
   @AfterLoad()
