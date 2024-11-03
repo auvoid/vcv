@@ -15,7 +15,7 @@
 	import Step2 from './steps/step2.svelte';
 	import Step3 from './steps/step3.svelte';
 	import Step4 from './steps/step4.svelte';
-    import Step5 from './steps/step5.svelte';
+	import Step5 from './steps/step5.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { apiClient } from '$lib/axios/axios';
@@ -109,7 +109,6 @@
 			credentials = data.credentials;
 			experiences = data.experiences;
 		}
- 
 	});
 </script>
 
@@ -124,7 +123,7 @@
 				{:else if step === 2}
 					<Step3 bind:selectedCredentials={credentials}></Step3>
 				{:else if step === 3}
-					<Step4 cvId={cvId}></Step4>
+					<Step4 {cvId}></Step4>
 				{:else if step === 4}
 					<Step5 onSavePdfClick={handlePdfSave}></Step5>
 				{/if}
