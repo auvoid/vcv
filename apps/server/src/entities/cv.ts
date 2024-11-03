@@ -1,4 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Credential } from './credential';
 import { Experience } from './experience';
@@ -27,4 +34,7 @@ export class CV extends BaseEntity {
   @ManyToMany(() => Credential, (e) => e.cvs)
   @JoinTable()
   credentials: Credential[];
+
+  @OneToMany(() => Experience, (e) => e.cv, { onDelete: 'CASCADE' })
+  experiences: Experience[];
 }

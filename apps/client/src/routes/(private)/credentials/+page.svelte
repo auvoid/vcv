@@ -23,6 +23,7 @@
 	import { DotsHorizontalOutline } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 	import { onMount } from 'svelte';
+	import { formatDid } from '$lib/util/did';
 
 	let selected: boolean = false;
 	let selectedCredential: Record<string, any>;
@@ -32,7 +33,7 @@
 	let credentials: Record<string, any>[] = [];
 	let credentialAssignmentsMap: Record<string, string | null> = {};
 	const items = [
-		{ value: 'cerification', name: 'Certification Document' },
+		{ value: 'certification', name: 'Certification Document' },
 		{ value: 'education', name: 'Education Document' }
 	];
 
@@ -48,29 +49,6 @@
 	}
 
 	$: createAssignmentMap(credentials);
-
-	function formatDid(did: string) {
-		// Split the DID by colons to extract the method and identifier parts
-		const parts = did.split(':');
-
-		if (parts.length < 3) {
-			throw new Error('Invalid DID format');
-		}
-
-		if (parts[1] === 'web') {
-			// For did:web, return the full last segment of the identifier
-			const lastSegment = parts[2];
-			return lastSegment;
-		}
-
-		const method = parts[1]; // DID method
-		const identifier = parts[2]; // DID identifier
-
-		// Format as `did:<method>:<first-3 letters>...<last 6 letters>`
-		const formattedDid = `did:${method}:${identifier.slice(0, 3)}...${identifier.slice(-6)}`;
-
-		return formattedDid;
-	}
 
 	async function handleShareCredentials() {
 		const {

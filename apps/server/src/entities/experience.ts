@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { CV } from './cv';
 
@@ -18,4 +18,13 @@ export class Experience extends BaseEntity {
 
   @Column()
   jobTitle: string;
+
+  @Column()
+  reference: string;
+
+  @Column({ default: 'pending' })
+  status: 'pending' | 'approved' | 'rejected';
+
+  @ManyToOne(() => CV, (e) => e.experiences)
+  cv: CV;
 }

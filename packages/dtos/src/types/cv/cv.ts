@@ -1,4 +1,12 @@
-import { IsArray, IsObject, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsDateString,
+    IsEmail,
+    IsObject,
+    IsOptional,
+    IsString,
+    IsUrl,
+} from 'class-validator';
 
 export class CreateCVDto {
     @IsString()
@@ -18,4 +26,24 @@ export class CreateCVDto {
 
     @IsArray()
     credentials: string[];
+}
+export class CreateExperienceDTO {
+    @IsString()
+    companyName: string;
+
+    @IsUrl()
+    companyUrl: string;
+
+    @IsDateString()
+    startDate: Date;
+
+    @IsDateString()
+    @IsOptional()
+    endDate: Date;
+
+    @IsString()
+    jobTitle: string;
+
+    @IsEmail()
+    reference: string;
 }

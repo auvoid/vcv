@@ -28,11 +28,20 @@
 	let docName: string;
 	let signingParties: string[];
 	let isSigned: boolean;
-	let cvs: string[];
+	let cvs: Record<string, any>[];
 
-	onMount(async () => {
+	async function handleDelete(id: string) {
+		await apiClient.delete(`/cv/${id}`);
+		await fetchCvs();
+	}
+
+	async function fetchCvs() {
 		const { data } = await apiClient.get('/cv');
 		cvs = data;
+	}
+
+	onMount(() => {
+		fetchCvs();
 	});
 </script>
 
@@ -42,29 +51,32 @@
 		<Table divClass="w-full" striped>
 			<TableHead class="text-gray-500 bg-gray-100">
 				<TableHeadCell>VCV Name</TableHeadCell>
-				<TableHeadCell>Date Completed</TableHeadCell>
-				<TableHeadCell>Status</TableHeadCell>
+				<TableHeadCell>Created At</TableHeadCell>
 			</TableHead>
 			<TableBody>
 				{#if cvs && cvs.length > 0}
-					<TableBodyRow>
-						<TableBodyCell class="text-gray-600">The CV</TableBodyCell>
-						<TableBodyCell class="text-gray-600">{moment().format('DD MMM YYYY')}</TableBodyCell>
-						<TableBodyCell class="text-gray-600">
-							<div class="flex justify-between">
-								<Badge color="green">Completed</Badge>
-								<button class="text-primary-500 hover:text-primary-600">
-									<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
-									<Dropdown border class="py-2">
-										<DropdownItem>View VCV</DropdownItem>
-										<DropdownItem>Delete VCV</DropdownItem>
-										<DropdownItem>Download VCV</DropdownItem>
-										<DropdownItem>Share VCV</DropdownItem>
-									</Dropdown>
-								</button>
-							</div>
-						</TableBodyCell>
-					</TableBodyRow>
+					{#each cvs as cv (cv.id)}
+						<TableBodyRow>
+							<TableBodyCell class="text-gray-600">{cv.cvName}</TableBodyCell>
+
+							<TableBodyCell class="text-gray-600">
+								<div class="flex justify-between">
+									{moment(cv.createdAt).format('DD MMM YYYY')}
+									<button class="text-primary-500 hover:text-primary-600">
+										<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
+										<Dropdown border class="py-2">
+											<DropdownItem>View VCV</DropdownItem>
+											<DropdownItem on:click={() => goto(`/new-vcv?id=${cv.id}`)}
+												>Edit VCV</DropdownItem
+											>
+											<DropdownItem on:click={() => handleDelete(cv.id)}>Delete VCV</DropdownItem>
+											<DropdownItem>Download VCV</DropdownItem>
+										</Dropdown>
+									</button>
+								</div>
+							</TableBodyCell>
+						</TableBodyRow>
+					{/each}
 				{:else}
 					<TableBodyCell colspan={5}>
 						<div class="flex w-full flex-col items-center gap-4 px-10 py-[22px]">
