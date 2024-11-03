@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { token } from '$lib/store/store';
 	import { Avatar, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper } from 'flowbite-svelte';
 	import {
 		ChartPieSolid,
@@ -11,6 +12,12 @@
 	} from 'flowbite-svelte-icons';
 
 	$: activeUrl = $page.url.pathname;
+
+
+	const handleLogout = async () => {
+		token.update(() => '');
+		window.location.pathname = '/login';
+	};
 </script>
 
 <Sidebar {activeUrl}>
@@ -43,7 +50,7 @@
 						/>
 					</svelte:fragment>
 				</SidebarItem>
-				<SidebarItem label="Notification">
+				<SidebarItem class="future-disabled" label="Notification">
 					<svelte:fragment slot="icon">
 						<InboxFullSolid
 							class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -61,21 +68,21 @@
 		</div>
 		<div>
 			<SidebarGroup border>
-				<SidebarItem label="Docs">
+				<SidebarItem class="future-disabled" label="Docs">
 					<svelte:fragment slot="icon">
 						<BookSolid
 							class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
 						/>
 					</svelte:fragment>
 				</SidebarItem>
-				<SidebarItem label="Settings">
+				<SidebarItem class="future-disabled" label="Settings">
 					<svelte:fragment slot="icon">
 						<UserSettingsSolid
 							class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
 						/>
 					</svelte:fragment>
 				</SidebarItem>
-				<SidebarItem label="Logout">
+				<SidebarItem on:click={handleLogout} label="Logout">
 					<svelte:fragment slot="icon">
 						<ArrowRightToBracketOutline
 							strokeWidth={2.5}
