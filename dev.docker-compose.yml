@@ -1,6 +1,6 @@
 services:
-  client:
-    container_name: client
+  vcv-client:
+    container_name: vcv-client
     networks:
       - host-bridge
     build:
@@ -14,17 +14,18 @@ services:
       watch:
         - action: sync
           path: ./apps/client
-          target: /usr/src/app/client
+          target: /usr/src/app/apps/client
           ignore:
             - node_modules
         - action: rebuild
           path: ./apps/client/package.json
+    restart: unless-stopped
     depends_on:
-      - server
-  server:
+      - vcv-server
+  vcv-server:
     networks:
       - host-bridge
-    container_name: server
+    container_name: vcv-server
     build:
       context: .
       dockerfile: ./docker/dev/Dockerfile.server
@@ -34,13 +35,28 @@ services:
       watch:
         - action: sync
           path: ./apps/server
-          target: /usr/src/app/core-api
+          target: /usr/src/app/apps/server
           ignore:
             - node_modules
         - action: rebuild
           path: ./apps/server/package.json
+    restart: unless-stopped
+    depends_on:
+      - vcv-db
     env_file:
       - .env
+  vcv-db:
+    networks:
+      - host-bridge
+    container_name: vcv-db
+    image: postgres:15.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD-password}
+    volumes:
+      - ~/data/vcv/db:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
 
 networks:
   host-bridge:

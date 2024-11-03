@@ -3,6 +3,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import { goto } from '$app/navigation';
 	import { apiClient } from '$lib/axios/axios';
+	import { token } from '$lib/store/store';
 
 	let email: string;
 	let password: string;
@@ -17,6 +18,7 @@
 					password
 				})
 				.then(async (res) => {
+					token.set(res.data.token);
 					if (res.data.token) {
 						await goto('/dashboard');
 					}
