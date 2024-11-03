@@ -15,15 +15,7 @@ async function initializeApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
-  app.setGlobalPrefix('api', {
-    exclude: [
-      '/.well-known/did.json',
-      '/.well-known/acme-challenge/:token',
-      '/:did/.well-known/did.json',
-      // '/:did/.well-known/oauth-authorization-server',
-      // '/:did/.well-known/openid-credential-issuer',
-    ],
-  });
+  app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
     .setTitle('AuvoID')
     .addApiKey(

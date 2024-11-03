@@ -16,6 +16,6 @@ import { EmailModule } from '../email/email.module';
   ],
   providers: [CVsService, ExperiencesService],
   controllers: [CVController],
-  exports: [],
+  exports: [ExperiencesService],
 })
 export class CVModule {}

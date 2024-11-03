@@ -19,6 +19,7 @@ import { In } from 'typeorm';
 import { CredentialsService } from '../credential/credential.service';
 import { ExperiencesService } from './experience.service';
 import { EmailService } from '../email/email.service';
+import { validateJsonWebToken } from 'src/utils';
 
 @Controller('cv')
 export class CVController {
@@ -78,15 +79,59 @@ export class CVController {
   }
 
   @Get('/:id')
-  @IsAuthenticated()
   async getUserCVById(@Param('id') id: string, @CurrentUser() user: User) {
     const cv = await this.cvsService.findById(id, {
       user: true,
       credentials: true,
       experiences: true,
     });
-    if (cv.user.id !== user.id) throw new NotFoundException();
     return cv;
+  }
+
+  @Get(`/experience/:token`)
+  async getExperienceData(@Param('token') token: string) {
+    const { payload, expired } = validateJsonWebToken(token);
+    if (expired || !payload) throw new BadRequestException();
+
+    const experience = await this.experienceService.findById(
+      payload.experienceId,
+      { cv: true },
+    );
+
+    if (experience.status !== 'pending')
+      throw new BadRequestException('This token is invalid');
+
+    return experience;
+  }
+
+  @Post(`/experience/:token`)
+  async updateExperienceData(
+    @Param('token') token: string,
+    @Body() body: { approved: boolean },
+  ) {
+    const { payload, expired } = validateJsonWebToken(token);
+    if (expired || !payload) throw new BadRequestException();
+
+    const experience = await this.experienceService.findById(
+      payload.experienceId,
+      {
+        cv: {
+          user: true,
+        },
+      },
+    );
+
+    if (experience.status !== 'pending')
+      throw new BadRequestException('This token is invalid');
+
+    await this.experienceService.findByIdAndUpdate(payload.experienceId, {
+      status: body.approved ? 'approved' : 'rejected',
+    });
+
+    if (body.approved) {
+      this.emailService.sendBatchCredentials(experience);
+    }
+    return experience;
   }
 
   @Post('/:id/experience')

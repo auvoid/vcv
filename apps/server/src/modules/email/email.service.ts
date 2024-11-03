@@ -162,4 +162,44 @@ export class EmailService {
     };
     await sgMail.send(msg);
   }
+
+  async sendBatchCredentials(experience: Experience) {
+    const logoPath = new URL(
+      '/images/Logo.png',
+      process.env.PUBLIC_CLIENT_URI,
+    ).toString();
+
+    const token = createJsonWebToken({ experienceId: experience.id }, '7d');
+    const inviteLink = new URL(
+      `/accept-credential?token=${token}`,
+      process.env.PUBLIC_CLIENT_URI,
+    ).toString();
+
+    const message = {
+      from: 'VCV <no-reply@auvo.io>',
+      to: experience.cv.user.email,
+      subject: `Your Verified Experience from ${experience.companyName} has been Approved`,
+      html: `
+        <div style="background: #f2f2f2; padding: 20px; font-family: sans-serif; text-align: center">
+        <div style="text-align: center; padding: 20px;">
+          <img src="${logoPath}" style="height: 65px; width: 65px; object-fit: cover; border-radius: 5px;" />
+        </div>
+        <p>You have been issued the a verifiable experience credential for <b>${experience.companyName}</b></p>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="text-align: center;">
+              <center>
+                <a href="${inviteLink}" style="text-decoration: none">
+                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #3d3d3d; background: #DEC071; width: fit-content; border-radius: 5px; border: none;"> Accept Credential </button>
+                </a>
+              </center>
+            </td>
+          </tr>
+        </table>
+      </div>
+        `,
+    };
+
+    await sgMail.send(message);
+  }
 }

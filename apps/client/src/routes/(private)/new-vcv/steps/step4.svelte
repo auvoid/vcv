@@ -95,7 +95,8 @@
 <h1 class="text-lg font-semibold text-gray-600 mb-1">Request Verifiable Experience credentials</h1>
 <p class="mb-2">
 	A verified experience, would issue you a verifiable credential which would be approved by your
-	place of work.
+	place of work. Any pending verified experience would automatically be added to your VCV once
+	approved by your colleague
 </p>
 
 <Button on:click={() => (showExperienceModal = true)} color="white"

@@ -8,6 +8,7 @@ import { GlobalModule } from './modules/global/global.module';
 import { CVModule } from './modules/cv/cv.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CurrentUserInterceptor } from './guards/auth.guard';
+import { WellKnownModule } from './modules/well-known/well-known.module';
 
 @Module({
   imports: [
@@ -17,6 +18,8 @@ import { CurrentUserInterceptor } from './guards/auth.guard';
     EmailModule,
     GlobalModule,
     CVModule,
+
+    WellKnownModule,
   ],
   controllers: [],
   providers: [

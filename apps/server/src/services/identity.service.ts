@@ -14,26 +14,21 @@ import axios from 'axios';
 
 const { readFile, writeFile } = promises;
 
-function constructSimpleStore() {
-  const reader = async () => {
-    const raw = await readFile(
-      path.join(process.env.IDENTITY_PATH, './simple-store'),
-    );
-    try {
-      return JSON.parse(raw.toString());
-    } catch {
-      return [];
-    }
-  };
-
-  const writer = async (data: { id: string; pin: number }[]) => {
-    await writeFile(
-      path.join(process.env.IDENTITY_PATH, './simple-store'),
-      JSON.stringify(data),
-    );
-  };
-
-  return { reader, writer };
+class Store {
+  create(payload: { id: string; pin: number }) {
+    return { id: payload.id, pin: null };
+  }
+  getAll: () =>
+    | { id: string; pin: number }[]
+    | Promise<{ id: string; pin: number }[]>;
+  getById(id: string) {
+    return { id, pin: null };
+  }
+  updateById: (
+    id: string,
+    payload: Partial<{ id: string; pin: number }>,
+  ) => { id: string; pin: number } | Promise<{ id: string; pin: number }>;
+  deleteById: (id: string) => Promise<{ id: string; pin: number }>;
 }
 
 @Injectable()
@@ -129,7 +124,6 @@ export class IdentityService {
       signer,
       signingAlgorithm: SigningAlgs.EdDSA,
     });
-    const { reader, writer } = constructSimpleStore();
     const issuer = new VcIssuer({
       batchCredentialEndpoint: new URL(
         '/api/oid4vc/credentials',
@@ -154,7 +148,7 @@ export class IdentityService {
       logoUri: logo,
       credentialIssuer: new URL(`/api`, process.env.PUBLIC_BASE_URI).toString(),
       proofTypesSupported: ['jwt'],
-      store: new SimpleStore({ reader, writer }),
+      store: new Store(),
     });
 
     const op = new OpenidProvider({
