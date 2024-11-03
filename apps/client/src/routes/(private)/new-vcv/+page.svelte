@@ -120,7 +120,7 @@
 				{:else if step === 2}
 					<Step3 bind:selectedCredentials={credentials}></Step3>
 				{:else if step === 3}
-					<Step4></Step4>
+					<Step4 {cvId}></Step4>
 				{:else if step === 4}
 					<Step5 onSavePdfClick={handlePdfSave}></Step5>
 				{/if}

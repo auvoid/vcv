@@ -17,7 +17,6 @@ const config = {
 			dir: '../../'
 		}
 	},
-
 	extensions: ['.svelte', '.svx']
 };
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDid } from '$lib/util/did';
-	import { Avatar, Card, Hr } from 'flowbite-svelte';
-	import { EnvelopeSolid, LinkedinSolid, PhoneSolid, QrCodeOutline } from 'flowbite-svelte-icons';
+	import { Avatar, Card, Hr, Modal } from 'flowbite-svelte';
+	import { EnvelopeSolid, LinkedinSolid, PhoneSolid, BadgeCheckSolid } from 'flowbite-svelte-icons';
 	import { PUBLIC_CLIENT_URI } from '$env/static/public';
 	import moment from 'moment';
 	import Qr from '../ui/Qr.svelte';
@@ -15,11 +15,43 @@
 	export let role: string;
 	export let cvId: string;
 
+	let showCredModal = false;
+	let cred: Record<string, any>;
+	export let toPdf: HTMLDivElement;
+
 	$: cvUrl = new URL(`/verify/cvId`, PUBLIC_CLIENT_URI).toString();
 </script>
 
+<Modal title="View Credential" bind:open={showCredModal}>
+	<div class="flex flex-col gap-4">
+		<div class="flex gap-4 items-center">
+			<Avatar
+				rounded
+				size="lg"
+				class="object-cover"
+				src={cred.decoded.vc.credentialSubject.enrichment
+					? cred.decoded.vc.credentialSubject.enrichment.logo_uri
+					: null}
+			/>
+			<div>
+				<h1 class="text-2xl font-bold text-gray-600 flex items-center gap-2">{cred.name}</h1>
+				<p>Issued by: <spam class="font-semibold">{formatDid(cred.decoded.iss)}</spam></p>
+			</div>
+		</div>
+
+		{#each Object.keys(cred.decoded.vc.credentialSubject).filter((k) => k !== 'enrichment') as key (key)}
+			<div class="flex flex-col">
+				<h3 class="font-sm font-semibold text-gray-500">{key}</h3>
+				<p>
+					{cred.decoded.vc.credentialSubject[key]}
+				</p>
+			</div>
+		{/each}
+	</div>
+</Modal>
+
 <div class="flex flex-col items-center self-center">
-	<div class="aspect-[1/1.414] min-w-[595px] flex">
+	<div class="aspect-[1/1.414] min-w-[595px] flex" bind:this={toPdf}>
 		<div class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center">
 			<div>
 				{#if email || phoneNum || linkedin}
@@ -70,32 +102,46 @@
 					<h1 class="font-semibold text-lg text-gray-700">Experiences</h1>
 					<div class="flex flex-col gap-2">
 						{#each credentials.filter((c) => c.type === 'experience') as credential (credential.id)}
-							<Card padding="xs" shadow={false} border={false} class="max-w-full">
-								<div class="flex items-center gap-2">
-									<div class="flex gap-3">
-										<div class="flex flex-col">
-											<h3 class="text-sm font-semibold text-gray-700">
-												{credential.decoded.vc.credentialSubject['Company Name']} - {new URL(
-													credential.decoded.vc.credentialSubject['Company Website']
-												).host}
-											</h3>
-											<p class="text-sm font-bold">
-												{credential.decoded.vc.credentialSubject['Job Title']}
-											</p>
-											<p class="text-xs">
-												{moment(credential.decoded.vc.credentialSubject['Start Date']).format(
-													'MMM YYYY'
-												)} - {credential.decoded.vc.credentialSubject['End Date'] !== 'Present'
-													? moment(
-															credential.decoded.vc.credentialSubject['End Date'].format('MMM YYYY')
-														)
-													: 'Present'}
-											</p>
-											<p class="text-xs">
-												Verified By: {credential.decoded.vc.credentialSubject['Verified By']}
-											</p>
+							<Card
+								padding="xs"
+								shadow={false}
+								border={false}
+								class="max-w-full cursor-pointer"
+								on:click={() => {
+									showCredModal = true;
+									cred = credential;
+								}}
+							>
+								<div class="flex justify-between">
+									<div class="flex items-center gap-2">
+										<div class="flex gap-3">
+											<div class="flex flex-col">
+												<h3 class="text-sm font-semibold text-gray-700">
+													{credential.decoded.vc.credentialSubject['Company Name']} - {new URL(
+														credential.decoded.vc.credentialSubject['Company Website']
+													).host}
+												</h3>
+												<p class="text-sm font-bold">
+													{credential.decoded.vc.credentialSubject['Job Title']}
+												</p>
+												<p class="text-xs">
+													{moment(credential.decoded.vc.credentialSubject['Start Date']).format(
+														'MMM YYYY'
+													)} - {credential.decoded.vc.credentialSubject['End Date'] !== 'Present'
+														? moment(
+																credential.decoded.vc.credentialSubject['End Date'].format(
+																	'MMM YYYY'
+																)
+															)
+														: 'Present'}
+												</p>
+												<p class="text-xs">
+													Verified By: {credential.decoded.vc.credentialSubject['Verified By']}
+												</p>
+											</div>
 										</div>
 									</div>
+									<BadgeCheckSolid size="md" color="#184c64"></BadgeCheckSolid>
 								</div>
 							</Card>
 						{/each}
@@ -108,27 +154,40 @@
 					<h1 class="font-semibold text-lg text-gray-700">Education</h1>
 					<div class="flex flex-col gap-2">
 						{#each credentials.filter((c) => c.type === 'education') as credential (credential.id)}
-							<Card padding="xs" shadow={false} border={false} class="max-w-full">
-								<div class="flex items-center gap-2">
-									<Avatar
-										src={credential.decoded.vc.credentialSubject.enrichment
-											? credential.decoded.vc.credentialSubject.enrichment.logo_uri
-											: null}
-										rounded
-										size="md"
-										class="object-cover"
-									/>
-									<div class="flex gap-3">
-										<div class="flex flex-col">
-											<h3 class="text-sm font-semibold text-gray-700">{credential.name}</h3>
-											<p class="text-xs">{formatDid(credential.decoded.iss)}</p>
-											<p class="text-xs">
-												Issued at: {moment(
-													(credential.decoded.nbf ?? credential.createdAt) * 1000
-												).format('DD MMM YYYY')}
-											</p>
+							<Card
+								padding="xs"
+								shadow={false}
+								border={false}
+								class="max-w-full cursor-pointer"
+								on:click={() => {
+									showCredModal = true;
+									cred = credential;
+								}}
+							>
+								<div class="flex justify-between">
+									<div class="flex items-center gap-2">
+										<Avatar
+											src={credential.decoded.vc.credentialSubject.enrichment
+												? credential.decoded.vc.credentialSubject.enrichment.logo_uri
+												: null}
+											rounded
+											size="md"
+											class="object-cover"
+										/>
+										<div class="flex gap-3">
+											<div class="flex flex-col">
+												<h3 class="text-sm font-semibold text-gray-700">{credential.name}</h3>
+												<p class="text-xs">{formatDid(credential.decoded.iss)}</p>
+												<p class="text-xs">
+													Issued at: {moment(
+														(credential.decoded.nbf ?? credential.createdAt) * 1000
+													).format('DD MMM YYYY')}
+												</p>
+											</div>
 										</div>
 									</div>
+
+									<BadgeCheckSolid size="md" color="#184c64"></BadgeCheckSolid>
 								</div>
 							</Card>
 						{/each}
@@ -141,27 +200,40 @@
 					<h1 class="font-semibold text-lg text-gray-700">Certifications</h1>
 					<div class="flex flex-col gap-2">
 						{#each credentials.filter((c) => c.type === 'certification') as credential (credential.id)}
-							<Card padding="xs" shadow={false} border={false} class="max-w-full">
-								<div class="flex items-center gap-2">
-									<Avatar
-										src={credential.decoded.vc.credentialSubject.enrichment
-											? credential.decoded.vc.credentialSubject.enrichment.logo_uri
-											: null}
-										rounded
-										size="md"
-										class="object-cover"
-									/>
-									<div class="flex gap-3">
-										<div class="flex flex-col">
-											<h3 class="text-sm font-semibold text-gray-700">{credential.name}</h3>
-											<p class="text-xs">{formatDid(credential.decoded.iss)}</p>
-											<p class="text-xs">
-												Issued at: {moment(
-													(credential.decoded.nbf ?? credential.createdAt) * 1000
-												).format('DD MMM YYYY')}
-											</p>
+							<Card
+								padding="xs"
+								shadow={false}
+								border={false}
+								class="max-w-full cursor-pointer"
+								on:click={() => {
+									showCredModal = true;
+									cred = credential;
+								}}
+							>
+								<div class="flex justify-between">
+									<div class="flex items-center gap-2">
+										<Avatar
+											src={credential.decoded.vc.credentialSubject.enrichment
+												? credential.decoded.vc.credentialSubject.enrichment.logo_uri
+												: null}
+											rounded
+											size="md"
+											class="object-cover"
+										/>
+										<div class="flex gap-3">
+											<div class="flex flex-col">
+												<h3 class="text-sm font-semibold text-gray-700">{credential.name}</h3>
+												<p class="text-xs">{formatDid(credential.decoded.iss)}</p>
+												<p class="text-xs">
+													Issued at: {moment(
+														(credential.decoded.nbf ?? credential.createdAt) * 1000
+													).format('DD MMM YYYY')}
+												</p>
+											</div>
 										</div>
 									</div>
+
+									<BadgeCheckSolid size="md" color="#184c64"></BadgeCheckSolid>
 								</div>
 							</Card>
 						{/each}
