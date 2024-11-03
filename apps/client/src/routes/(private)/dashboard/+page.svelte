@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { apiClient } from '$lib/axios/axios';
 	import CvPreview from '$lib/components/fragments/CvPreview.svelte';
 	import DocPreviewBar from '$lib/components/fragments/DocPreviewBar.svelte';
-	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import {
 		Card,
@@ -17,21 +17,21 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
-	import {
-		CheckCircleSolid,
-		DotsHorizontalOutline,
-		ExclamationCircleSolid
-	} from 'flowbite-svelte-icons';
+	import { DotsHorizontalOutline, ExclamationCircleSolid } from 'flowbite-svelte-icons';
 	import moment from 'moment';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { jsPDF } from 'jspdf';
+	import { PUBLIC_BASE_URI } from '$env/static/public';
 
 	let selectedDoc: boolean;
-	let docName: string;
-	let signingParties: string[];
-	let isSigned: boolean;
 	let cvs: Record<string, any>[];
 
 	let selectedCv: Record<string, any>;
+
+	let handlePdfSave: (cv: Record<string, string>) => void | Promise<void>;
+	let handleDownloadClick: (cv: Record<string, string>) => void | Promise<void>;
+
+	let makePdf: HTMLDivElement;
 
 	async function handleDelete(id: string) {
 		await apiClient.delete(`/cv/${id}`);
@@ -43,8 +43,36 @@
 		cvs = data;
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		fetchCvs();
+
+		const html2pdf = (await import('html2pdf.js')).default;
+
+		let html2PdfWorker = html2pdf();
+
+		handlePdfSave = async (cv) => {
+			let opt = {
+				margin: [0, 0, 0, 0],
+				filename: 'YourVCV.pdf',
+				image: { type: 'png' },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: 'mm', format: 'a4', orientation: 'p', putOnlyUsedFonts: true }
+			};
+			const doc = await html2PdfWorker.from(makePdf).set(opt).toPdf().get('pdf');
+			console.log(cv.id);
+			await doc.addMetadata(cv.id, PUBLIC_BASE_URI);
+			console.log(doc);
+			doc.save('VCV.pdf');
+		};
+
+		handleDownloadClick = async (cv: Record<string, string>) => {
+			selectedCv = cv;
+			// wait for dom data
+			await tick();
+			handlePdfSave(cv);
+		};
+
+		const urlParams = new URLSearchParams($page.url.search);
 	});
 </script>
 
@@ -76,7 +104,9 @@
 												>Edit VCV</DropdownItem
 											>
 											<DropdownItem on:click={() => handleDelete(cv.id)}>Delete VCV</DropdownItem>
-											<DropdownItem>Download VCV</DropdownItem>
+											<DropdownItem on:click={() => handleDownloadClick(cv)}
+												>Download VCV</DropdownItem
+											>
 										</Dropdown>
 									</button>
 								</div>
@@ -109,6 +139,7 @@
 					phoneNum={selectedCv.contacts.phone}
 					email={selectedCv.contacts.email}
 					cvId={selectedCv.id}
+					bind:toPdf={makePdf}
 				></CvPreview>
 			{:else if !cvs}
 				<p class="w-full py-8 text-center">You don't have any VCV to view yet :(</p>
