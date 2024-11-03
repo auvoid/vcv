@@ -16,6 +16,6 @@ jobs:
           rm -rf ~/vcv/*
           cp -r ./* ~/vcv/
           cp ~/.env.vcv ~/vcv/.env
-          cd ~/syner 
+          cd ~/vcv 
           docker compose down --remove-orphans
           docker compose up -d --build
