@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { Avatar, Card, Modal, Tooltip } from 'flowbite-svelte';
 	import {
@@ -7,72 +8,114 @@
 		CloseCircleSolid,
 		ExclamationCircleSolid
 	} from 'flowbite-svelte-icons';
+	import { apiClient } from '$lib/axios/axios';
+	import { addToast } from '../../../store';
+	import moment from 'moment';
 
-	let showCredModal: boolean = false;
-	let verificationStatus: 'verified' | 'pending' | 'failed' = 'pending';
+	let showExperienceModal = false;
+	let companyUrl: string;
+	let startDate: string;
+	let endDate: string;
+	let companyName: string;
+	let jobTitle: string;
+	let reference: string;
+
+	export let experiences: Record<string, any>[] = [];
+	export let cvId: string;
+
+	async function requestExperience() {
+		const { data } = await apiClient.post(`/cv/${cvId}/experience`, {
+			companyUrl,
+			startDate,
+			endDate,
+			companyName,
+			jobTitle,
+			reference
+		});
+		await fetchExperiences();
+		addToast({ message: 'Experience Request has been sent' });
+		showExperienceModal = false;
+	}
+
+	async function fetchExperiences() {
+		const { data } = await apiClient.get(`cv/${cvId}/experience`);
+		experiences = data;
+	}
 </script>
+
+<Modal bind:open={showExperienceModal}>
+	<div class="flex flex-col gap-1">
+		<Input
+			label="Company Name"
+			variant="text"
+			bind:value={companyName}
+			placeholder="Doe Systems LLC"
+		></Input>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<Input label="Job Title" variant="text" bind:value={jobTitle} placeholder="Software Developer"
+		></Input>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<Input
+			label="Company URL"
+			variant="text"
+			bind:value={companyUrl}
+			placeholder="https://doesys.com"
+		></Input>
+	</div>
+	<div class="flex flex-col gap-1">
+		<Input
+			label="Reference Colleague's Email"
+			variant="text"
+			bind:value={reference}
+			placeholder="jake@doesystems.com"
+		></Input>
+	</div>
+	<div class="flex flex-col gap-1">
+		<Input label="Start Date" variant="date" bind:value={startDate}></Input>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<Input
+			label="End Date (Leave Empty If Presently Working Here)"
+			variant="date"
+			bind:value={endDate}
+		></Input>
+	</div>
+	<div slot="footer">
+		<Button on:click={requestExperience}>Request Verified Experience</Button>
+	</div>
+</Modal>
 
 <h1 class="text-2xl font-bold text-gray-700 mb-5">New VCV</h1>
 
-<h1 class="text-lg font-semibold text-gray-600 mb-5">
-	Select the credentials to be displayed in "Experience" Section from the following:
-</h1>
-<div class="flex flex-col gap-3">
-	<div class="flex gap-5">
-		<Checkbox></Checkbox>
-		<Card padding="xs">
-			<div class="flex gap-5 justify-between items-center">
-				<div class="flex gap-3">
-					<Avatar rounded size="md" class="object-cover" src="" />
-					<div class="flex flex-col border-b-gray-300">
-						<h3 class="text-md font-semibold text-gray-500">Internship Certificate</h3>
-						<p class="text-sm">The Amazing Company</p>
-					</div>
-				</div>
-				<div>
-					<Button color="light-blue" on:click={() => (showCredModal = true)}>View</Button>
-				</div>
-			</div>
-		</Card>
-	</div>
-</div>
+<h1 class="text-lg font-semibold text-gray-600 mb-1">Request Verifiable Experience credentials</h1>
+<p class="mb-2">
+	A verified experience, would issue you a verifiable credential which would be approved by your
+	place of work. Any pending verified experience would automatically be added to your VCV once
+	approved by your colleague
+</p>
 
-<Modal title="View Credential" bind:open={showCredModal}>
-	<div class="flex flex-col gap-4">
-		<div class="flex gap-4 items-center">
-			<Avatar rounded size="lg" class="object-cover" src="" />
-			<div>
-				<h1 class="text-2xl font-bold text-gray-600 flex items-center gap-2">
-					Internship Certificate
-					{#if verificationStatus === 'verified'}
-						<CheckCircleSolid class="text-brand-green"></CheckCircleSolid>
-						<Tooltip type="light"><p class="text-xs">Verified by VCV</p></Tooltip>
-					{:else if verificationStatus === 'pending'}
-						<ExclamationCircleSolid class="text-brand-yellow"></ExclamationCircleSolid>
-						<Tooltip type="light"><p class="text-xs">Verification Pending</p></Tooltip>
-					{:else if verificationStatus === 'failed'}
-						<CloseCircleSolid class="text-red-400"></CloseCircleSolid>
-						<Tooltip type="light"><p class="text-xs">Verification Failed</p></Tooltip>
-					{/if}
-				</h1>
-				<p>Issued by: <spam class="font-semibold"> The Government</spam></p>
-			</div>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
-		<div class="flex flex-col border-b-gray-300">
-			<h3 class="font-sm font-semibold text-gray-500">Other Details</h3>
-			<p>other details about the credential.</p>
-		</div>
+<Button on:click={() => (showExperienceModal = true)} color="white"
+	>Request Verfied Experience</Button
+>
+
+{#if experiences.length > 0}
+	<div class="flex flex-col gap-2 mt-4">
+		<h1 class="text-lg font-bold">Pending Experiences</h1>
+		{#each experiences as exp (exp.id)}
+			<Card class="min-w-full">
+				<h1 class="text-md font-bold">{exp.jobTitle}</h1>
+				<h2 class="text-gray-800 font-bold text-sm">
+					{exp.companyName} - {new URL(exp.companyUrl).hostname}
+				</h2>
+				<p class="text-gray-600 font-semibold text-sm">
+					{moment(exp.startDate).format('MMM YYYY')} - {exp.endDate ?? 'Present'}
+				</p>
+			</Card>
+		{/each}
 	</div>
-</Modal>
+{/if}

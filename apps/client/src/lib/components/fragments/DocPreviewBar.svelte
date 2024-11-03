@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { Card } from 'flowbite-svelte';
+
+	export let extraClass: string = 'min-w-[450px] shadow-xl h-[calc(100vh-130px)]';
 </script>
 
-<Card class="min-w-[450px] shadow-xl h-[calc(100vh-130px)]">
+<Card class={extraClass}>
 	<slot></slot>
 </Card>
