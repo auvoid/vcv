@@ -17,6 +17,7 @@
 
 	let showCredModal = false;
 	let cred: Record<string, any>;
+	export let toPdf: HTMLDivElement;
 
 	$: cvUrl = new URL(`/verify/cvId`, PUBLIC_CLIENT_URI).toString();
 </script>
@@ -50,7 +51,7 @@
 </Modal>
 
 <div class="flex flex-col items-center self-center">
-	<div class="aspect-[1/1.414] min-w-[595px] flex">
+	<div class="aspect-[1/1.414] min-w-[595px] flex" bind:this={toPdf}>
 		<div class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center">
 			<div>
 				<div>
