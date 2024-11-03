@@ -1,6 +1,15 @@
 <script lang="ts">
-	import Badge from '$lib/components/ui/Badge.svelte';
-</script>
+	import { goto } from '$app/navigation';
+	import { token } from '$lib/store/store';
+	import { onMount } from 'svelte';
 
-Hi
-<Badge color="red">A Badge</Badge>
+	onMount(async () => {
+		if ($token) {
+			await goto('/dashboard');
+		} else {
+			await goto('/login');
+		}
+	});
+
+	$: console.log($token);
+</script>
