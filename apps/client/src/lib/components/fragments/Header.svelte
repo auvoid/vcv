@@ -14,6 +14,7 @@
 	</div>
 	<div class="w-2/5">
 		<Search
+			disabled
 			class="w-full text-ellipsis rounded-lg py-[12px] focus:border-brand-green focus:ring-brand-green"
 			size="md"
 		></Search>
