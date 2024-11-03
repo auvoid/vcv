@@ -2,7 +2,9 @@
 	import { formatDid } from '$lib/util/did';
 	import { Avatar, Card, Hr } from 'flowbite-svelte';
 	import { EnvelopeSolid, LinkedinSolid, PhoneSolid, QrCodeOutline } from 'flowbite-svelte-icons';
+	import { PUBLIC_CLIENT_URI } from '$env/static/public';
 	import moment from 'moment';
+	import Qr from '../ui/Qr.svelte';
 
 	export let email: string;
 	export let phoneNum: string;
@@ -11,6 +13,9 @@
 	export let linkedin: string;
 	export let intro: string;
 	export let role: string;
+	export let cvId: string;
+
+	$: cvUrl = new URL(`/verify/cvId`, PUBLIC_CLIENT_URI).toString();
 </script>
 
 <div class="flex flex-col items-center self-center">
@@ -47,8 +52,10 @@
 				</div>
 			</div>
 			<div class="flex flex-col items-center justify-center">
-				<QrCodeOutline class="h-32 w-32"></QrCodeOutline>
-				<h1 class="text-[10px] font-medium text-gray-200">Scan the QR to Verify this CV</h1>
+				{#if cvId}
+					<Qr size={120} data={cvUrl}></Qr>
+					<h1 class="text-[10px] font-medium mt-2 text-gray-200">Scan the QR to Verify this CV</h1>
+				{/if}
 			</div>
 		</div>
 		<div class="w-[70%] h-full bg-gray-100 p-10">

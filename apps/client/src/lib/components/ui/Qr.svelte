@@ -2,10 +2,11 @@
 	import { qrcode } from 'svelte-qrcode-action';
 
 	export let data: string;
+	export let size: number = 250;
 
 	let options = {
-		width: 250,
-		height: 250,
+		width: size,
+		height: size,
 		backgroundOptions: {
 			color: '#ffffff',
 			borderRadius: '30px'

@@ -38,6 +38,7 @@
 	<Card class="min-w-[50%]">
 		{#if cv}
 			<CvPreview
+				cvId={cv.id}
 				name={cv.name}
 				credentials={cv.credentials}
 				role={cv.jobTitle}

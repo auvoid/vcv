@@ -50,23 +50,28 @@
 
 	async function handleContinue() {
 		console.log(step);
-		if (step < 3) return step++;
-		const payload = {
-			name,
-			cvName: vcvName,
-			title: role,
-			bio: intro,
-			contacts: { linkedin, email, phone: phoneNum },
-			credentials: credentials.map((c) => c.id)
-		};
-		if (editing) {
-			await apiClient.patch(`/cv/${cvId}`, payload);
+		if (step === 2) {
+			const payload = {
+				name,
+				cvName: vcvName,
+				title: role,
+				bio: intro,
+				contacts: { linkedin, email, phone: phoneNum },
+				credentials: credentials.map((c) => c.id)
+			};
+			if (editing) {
+				await apiClient.patch(`/cv/${cvId}`, payload);
+			} else {
+				const { data } = await apiClient.post('/cv', payload);
+				cvId = data.id;
+			}
+			step++;
+		} else if (step === 3) {
+			addToast({ message: `your CV ${vcvName} has been saved` });
+			goto('/dashboard');
 		} else {
-			const { data } = await apiClient.post('/cv', payload);
-			const cvId = data.id;
+			step++;
 		}
-		addToast({ message: `Your VCV "${name}" Saved Successfully` });
-		goto('/dashboard');
 	}
 
 	onMount(async () => {
@@ -118,7 +123,8 @@
 	<Card padding="lg" class="max-w-[60%] overflow-x-hidden shadow-xl h-[calc(100vh-130px)]">
 		<div class="flex flex-col max-w-full gap-4 items-start">
 			<h1 class="font-bold text-gray-950 text-md">{vcvName ?? 'My VCV'}</h1>
-			<CvPreview {name} {intro} {credentials} {role} {phoneNum} {email} {linkedin}></CvPreview>
+			<CvPreview {name} {intro} {credentials} {role} {phoneNum} {email} {linkedin} {cvId}
+			></CvPreview>
 		</div>
 	</Card>
 </main>
