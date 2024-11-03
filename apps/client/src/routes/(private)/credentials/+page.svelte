@@ -91,13 +91,14 @@
 	{/if}
 </Modal>
 
-<Modal bind:open={showAssignCredModal} title="Assign Credential Types">
+<Modal bind:open={showAssignCredModal} title="Assign Credential Types" class="max-h-[70vh]">
 	<Table>
 		<TableHead>
 			<TableHeadCell>Credential</TableHeadCell>
 			<TableHeadCell>Type</TableHeadCell>
 		</TableHead>
-		{#each credentials as credential (credential.id)}
+
+		{#each credentials.filter((f) => f.type !== 'experience') as credential (credential.id)}
 			<TableBodyRow>
 				<TableBodyCell>{credential.name}</TableBodyCell>
 				<TableBodyCell>
