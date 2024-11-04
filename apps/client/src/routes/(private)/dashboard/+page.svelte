@@ -20,11 +20,9 @@
 	import { DotsHorizontalOutline, ExclamationCircleSolid } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 	import { onMount, tick } from 'svelte';
-	import { jsPDF } from 'jspdf';
 	import { PUBLIC_BASE_URI } from '$env/static/public';
 	import Loading from '$lib/components/ui/Loading.svelte';
 
-	let selectedDoc: boolean;
 	let cvs: Record<string, any>[];
 	let selectedCv: Record<string, any>;
 	let loading = false;
@@ -103,7 +101,9 @@
 													>Edit VCV</DropdownItem
 												>
 												<DropdownItem on:click={() => handleDelete(cv.id)}>Delete VCV</DropdownItem>
-												<DropdownItem>Download VCV</DropdownItem>
+												<DropdownItem on:click={() => handleDownloadClick(cv)}
+													>Download VCV</DropdownItem
+												>
 											</Dropdown>
 										</button>
 									</div>
