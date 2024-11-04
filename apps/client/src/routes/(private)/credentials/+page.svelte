@@ -190,8 +190,9 @@
 							<TableBodyRow>
 								<TableBodyCell class="text-gray-600">{credential.name}</TableBodyCell>
 								<TableBodyCell class="text-gray-600"
-									>{credential.type.charAt(0).toUpperCase() + credential.type.slice(1) ??
-										'Uncategorized'}
+									>{credential.type
+										? credential.type.charAt(0).toUpperCase() + credential.type.slice(1)
+										: 'Uncategorized'}
 								</TableBodyCell>
 								<TableBodyCell class="text-gray-600">
 									<div class="flex justify-between">
