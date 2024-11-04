@@ -45,35 +45,37 @@
 	});
 </script>
 
-<div class="w-full">
-	<Label class="text-font-bold text-md mb-1">Upload Document to be signed</Label>
-	{#if !isPdfUploading}
-		<Dropzone
-			on:drop={dropHandle}
-			on:dragover={(event) => {
-				event.preventDefault();
-			}}
-			on:change={handleChange}
-			bind:files={pdfFile}
-			class="bg-gray-200"
-			accept={'.pdf'}
-		>
-			<UploadOutline size="xl"></UploadOutline>
-			{#if !pdfFile}
-				<p class="mb-2 text-sm text-gray-500">
-					<span class="font-semibold">Click to upload</span> or drag and drop
-				</p>
-				<p class="text-xs text-gray-500">PDF Format Only (File Size: 30MB)</p>
-			{:else}
-				<p>{fileName}</p>
-				<Button
-					on:click={() => {
-						pdfFile = undefined;
-					}}>Remove</Button
-				>
-			{/if}
-		</Dropzone>
-	{:else}
-		<p class="bg-gray-200 p-2 rounded-lg border border-gray-300">Pdf is uploading...</p>
-	{/if}
+<div class="w-full h-screen flex flex-col justify-center items-center">
+	<div class="w-[800px] ml-50">
+		<Label class="text-font-bold text-md mb-1">Upload VCV to be verified</Label>
+		{#if !isPdfUploading}
+			<Dropzone
+				on:drop={dropHandle}
+				on:dragover={(event) => {
+					event.preventDefault();
+				}}
+				on:change={handleChange}
+				bind:files={pdfFile}
+				class="bg-gray-200"
+				accept={'.pdf'}
+			>
+				<UploadOutline size="xl"></UploadOutline>
+				{#if !pdfFile}
+					<p class="mb-2 text-sm text-gray-500">
+						<span class="font-semibold">Click to upload</span> or drag and drop
+					</p>
+					<p class="text-xs text-gray-500">PDF Format Only (File Size: 30MB)</p>
+				{:else}
+					<p>{fileName}</p>
+					<Button
+						on:click={() => {
+							pdfFile = undefined;
+						}}>Remove</Button
+					>
+				{/if}
+			</Dropzone>
+		{:else}
+			<p class="bg-gray-200 p-2 rounded-lg border border-gray-300">Pdf is uploading...</p>
+		{/if}
+	</div>
 </div>

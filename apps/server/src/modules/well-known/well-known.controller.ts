@@ -18,6 +18,24 @@ export class WellKnownController {
           },
         ],
       },
+      {
+        name: 'University Degree',
+        type: ['University Degree'],
+        display: [
+          {
+            name: 'University Degree',
+          },
+        ],
+      },
+      {
+        name: 'First Aid Training',
+        type: ['First Aid Training'],
+        display: [
+          {
+            name: 'First Aid Training',
+          },
+        ],
+      },
     ];
 
     return issuerDid.issuer.getIssuerMetadata(supportedCreds);

@@ -29,6 +29,7 @@
 	let selectedCredential: Record<string, any>;
 	let showAssignCredModal = false;
 	let showShareCredModal = false;
+	let obtainingDummy = false;
 	let qr: string;
 	let credentials: Record<string, any>[] = [];
 	let credentialAssignmentsMap: Record<string, string | null> = {};
@@ -80,6 +81,21 @@
 		credentials = data;
 	}
 
+	async function obtainDemoCredentials() {
+		const {
+			data: { uri }
+		} = await apiClient.get('/oid4vc/dummy');
+		qr = uri;
+		obtainingDummy = true;
+		const ws = createWebsocket();
+		ws.onmessage = async (event) => {
+			const data = JSON.parse(event.data);
+			if (data.proceed) {
+				fetchCredentials();
+			}
+		};
+	}
+
 	onMount(() => {
 		fetchCredentials();
 	});
@@ -87,7 +103,31 @@
 
 <Modal bind:open={showShareCredModal} title="Add More Credentials">
 	{#if qr}
-		<Qr data={qr}></Qr>
+		{#if obtainingDummy}
+			<p>
+				Scan the QR code with an OpenID4VCI Compliant Wallet to Get Demo Credentials to have in your
+				CV
+			</p>
+
+			<Qr data={qr}></Qr>
+
+			<p>Already have credentials to share?</p>
+			<Button
+				on:click={() => {
+					obtainingDummy = false;
+					handleShareCredentials();
+				}}>Share Credentials</Button
+			>
+		{:else}
+			<p>
+				Scan the QR code with an OpenID4VP Compliant Wallet to Share all credentials that you want
+				to have in your CV
+			</p>
+			<Qr data={qr}></Qr>
+
+			<p>Don't have any credentials to share?</p>
+			<Button on:click={obtainDemoCredentials}>Obtain Demo Credentials</Button>
+		{/if}
 	{/if}
 </Modal>
 

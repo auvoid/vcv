@@ -43,6 +43,7 @@ import { CredentialsService } from '../credential/credential.service';
 import { ExperiencesService } from '../cv/experience.service';
 import { getResolver, validateJsonWebToken } from 'src/utils';
 import { Request } from 'express';
+import { v4 as uuid } from 'uuid';
 
 const presentationDefinition = {
   id: 'all-credentials-request',
@@ -135,6 +136,46 @@ export class Oid4vcController {
     const { issuer } = await this.identityService.getAdminDid();
     const response = await issuer.createTokenResponse(body);
     return response;
+  }
+
+  @Serialize(CredOfferDTO)
+  @ApiOkResponse({ type: CredOfferDTO })
+  @ApiNotFoundResponse({ type: NotFoundException })
+  @IsAuthenticated()
+  @Get('/dummy')
+  async createDummyCredentialsOffer(
+    @UserSession() session: Session,
+    @CurrentUser() user: User,
+  ) {
+    const { issuer } = await this.identityService.getAdminDid();
+
+    const id = session.id;
+    const demoCredentials = ['University Degree', 'First Aid Training'];
+    const offer = await issuer.createCredentialOffer(
+      {
+        credentials: demoCredentials,
+        requestBy: 'reference',
+        credentialOfferUri: new URL(
+          `/api/oid4vc/offers/${id}`,
+          process.env.PUBLIC_BASE_URI,
+        ).toString(),
+        pinRequired: false,
+      },
+      {
+        state: `${user.id}::${session.id}`,
+      },
+    );
+    const offerExists = await this.credOfferService.findById(id);
+    if (!offerExists) {
+      await this.credOfferService
+        .create({ id, offer: offer.offer })
+        .catch(() => null);
+    } else {
+      await this.credOfferService.findByIdAndUpdate(id, {
+        offer: offer.offer,
+      });
+    }
+    return offer;
   }
 
   @Serialize(CredOfferDTO)
@@ -250,7 +291,89 @@ export class Oid4vcController {
     const response = await identity.issuer.createSendCredentialsResponse({
       credentials: [verifiableCredential.cred],
     });
+
     await this.experienceService.findByIdAndDelete(experience.id);
+    return response;
+  }
+
+  @Post('/credentials')
+  async sendBatchCredentials(@Req() req: Request) {
+    const didJWT = await import('did-jwt');
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    const resolver = await getResolver();
+    if (!token) throw new UnauthorizedException('Bad Token');
+    const { payload } = await didJWT.verifyJWT(token, {
+      policies: { aud: false },
+      resolver,
+    });
+    const { state } = payload;
+    console.log(req.body);
+
+    const identity = await this.identityService.getAdminDid();
+
+    const did = await identity.issuer.validateCredentialsResponse({
+      token,
+      proof: req.body.credential_requests[0].proof.jwt,
+    });
+    const id = uuid();
+
+    const universityDegree = await identity.account.credentials.create({
+      recipientDid: did,
+      body: {
+        'Issued By': 'Example University',
+        GPA: 5,
+        'Student ID': 'S32404333',
+        Course: 'Masters in Cryptography',
+        'Course Completed': '12 Sept 2023',
+        enrichment: {
+          logo_uri: new URL(
+            '/images/university.webp',
+            process.env.PUBLIC_CLIENT_URI,
+          ).toString(),
+        },
+      },
+      id: new URL(`/verify/${id}`, process.env.PUBLIC_CLIENT_URI).toString(),
+      keyIndex: 0,
+      type: `University Degree`,
+    });
+    const firstAidTraining = await identity.account.credentials.create({
+      recipientDid: did,
+      body: {
+        'Issued By': 'Health and Training Board',
+        'Training Completion': '02 Sept 2023',
+        enrichment: {
+          logo_uri: new URL(
+            '/images/first-aid.webp',
+            process.env.PUBLIC_CLIENT_URI,
+          ).toString(),
+        },
+      },
+      id: new URL(
+        `/verify/${uuid()}`,
+        process.env.PUBLIC_CLIENT_URI,
+      ).toString(),
+      keyIndex: 0,
+      type: `First Aid Training`,
+    });
+    const [userId, sessionId] = state.split('::');
+    const user = await this.usersService.findById(userId);
+
+    for (const cred of [firstAidTraining, universityDegree]) {
+      const decodedVc = await identity.rp.validateJwt(cred.cred);
+      const credential = await this.credentialsService.create({
+        name: decodedVc.vc.type[1] ?? decodedVc.vc.type[0],
+        decoded: decodedVc,
+        raw: cred.cred,
+        user: user,
+        type: 'experience',
+      });
+    }
+
+    const response = await identity.issuer.createSendCredentialsResponse({
+      credentials: [universityDegree.cred, firstAidTraining.cred],
+    });
+
+    wsServer.broadcast(sessionId, { proceed: true });
     return response;
   }
 
