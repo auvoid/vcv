@@ -13,7 +13,6 @@
 
 	$: activeUrl = $page.url.pathname;
 
-
 	const handleLogout = async () => {
 		token.update(() => '');
 		window.location.pathname = '/login';
@@ -22,14 +21,14 @@
 
 <Sidebar {activeUrl}>
 	<SidebarWrapper
-		class="shadow-xl h-[calc(100vh-130px)] w-64 bg-white border flex flex-col justify-between"
+		class="shadow-xl h-[calc(100vh-130px)] rounded-l-none w-64 bg-white border flex flex-col justify-between"
 	>
 		<div>
 			<SidebarGroup>
 				<div class="flex flex-col gap-6 mb-3">
 					<div class="flex items-center gap-3">
 						<Avatar rounded class="object-cover" src="" />
-						<h2 class="text-lg font-semibold">User name</h2>
+						<h2 class="text-lg font-semibold">Welcome!</h2>
 					</div>
 				</div>
 				<SidebarItem href="/dashboard" active={activeUrl === '/dashboard'} label="Your VCVs">

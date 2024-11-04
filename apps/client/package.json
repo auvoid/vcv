@@ -48,6 +48,7 @@
 		"jspdf": "^2.5.2",
 		"moment": "^2.30.1",
 		"pdfjs-dist": "^4.8.69",
+		"svelte-loading-spinners": "^0.3.6",
 		"svelte-qrcode-action": "^1.0.2"
 	}
 }

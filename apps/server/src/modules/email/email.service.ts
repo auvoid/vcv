@@ -48,7 +48,7 @@ export class EmailService {
             <td style="text-align: center;">
               <center>
                 <a href="${verificationLink}" style="text-decoration: none">
-                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #3d3d3d; background: #DEC071; width: fit-content; border-radius: 5px; border: none;"> Verify Experience</button>
+                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #ffffff; background: #9187cd; width: fit-content; border-radius: 5px; border: none;"> Verify Experience</button>
                 </a>
               </center>
             </td>
@@ -102,7 +102,7 @@ export class EmailService {
             <td style="text-align: center;">
               <center>
                 <a href="${verificationLink}" style="text-decoration: none">
-                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #3d3d3d; background: #DEC071; width: fit-content; border-radius: 5px; border: none;"> Verify Email</button>
+                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #ffffff; background: #9187cd; width: fit-content; border-radius: 5px; border: none;"> Verify Email</button>
                 </a>
               </center>
             </td>
@@ -151,7 +151,7 @@ export class EmailService {
                         <td style="text-align: center;">
                           <center>
                             <a href="${url}" style="text-decoration: none">
-                              <button style="padding: 12px 25px; display: block; text-decoration: none; color: #3d3d3d; background: #DEC071; width: fit-content; border-radius: 5px; border: none;">View Application</button>
+                              <button style="padding: 12px 25px; display: block; text-decoration: none; color: #ffffff; background: #9187cd; width: fit-content; border-radius: 5px; border: none;">View Application</button>
                             </a>
                           </center>
                         </td>
@@ -190,7 +190,7 @@ export class EmailService {
             <td style="text-align: center;">
               <center>
                 <a href="${inviteLink}" style="text-decoration: none">
-                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #3d3d3d; background: #DEC071; width: fit-content; border-radius: 5px; border: none;"> Accept Credential </button>
+                  <button style="padding: 12px 25px; display: block; text-decoration: none; color: #ffffff; background: #9187cd; width: fit-content; border-radius: 5px; border: none;"> Accept Credential </button>
                 </a>
               </center>
             </td>

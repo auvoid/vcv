@@ -16,7 +16,7 @@
 	<Checkbox
 		{...$$props}
 		id="checkbox"
-		class="{checkedColor === 'green' ? 'text-brand-green' : 'text-brand-yellow'} focus focus:ring-0"
+		class="{checkedColor === 'green' ? 'text-brand-green' : 'text-brand-purple'} focus focus:ring-0"
 		on:click
 		bind:checked
 		on:change

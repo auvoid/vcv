@@ -43,7 +43,7 @@
 		></Input>
 	</div>
 	<div class="flex w-full gap-2">
-		<Button buttonClass="w-full" color="yellow" on:click={handleLogin}>Login</Button>
+		<Button buttonClass="w-full" color="purple" on:click={handleLogin}>Login</Button>
 		<Button buttonClass="w-full" color="white" on:click={() => goto('/')}>Cancel</Button>
 	</div>
 	<small class="w-full">

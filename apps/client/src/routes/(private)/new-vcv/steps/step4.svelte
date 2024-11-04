@@ -1,13 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import Checkbox from '$lib/components/ui/Checkbox.svelte';
-	import { Avatar, Card, Modal, Tooltip } from 'flowbite-svelte';
-	import {
-		CheckCircleSolid,
-		CloseCircleSolid,
-		ExclamationCircleSolid
-	} from 'flowbite-svelte-icons';
+	import { Card, Modal } from 'flowbite-svelte';
 	import { apiClient } from '$lib/axios/axios';
 	import { addToast } from '../../../store';
 	import moment from 'moment';
@@ -43,7 +37,7 @@
 	}
 </script>
 
-<Modal bind:open={showExperienceModal}>
+<Modal title="Enter Experience Details" bind:open={showExperienceModal}>
 	<div class="flex flex-col gap-1">
 		<Input
 			label="Company Name"
@@ -52,12 +46,10 @@
 			placeholder="Doe Systems LLC"
 		></Input>
 	</div>
-
 	<div class="flex flex-col gap-1">
 		<Input label="Job Title" variant="text" bind:value={jobTitle} placeholder="Software Developer"
 		></Input>
 	</div>
-
 	<div class="flex flex-col gap-1">
 		<Input
 			label="Company URL"
@@ -93,14 +85,13 @@
 <h1 class="text-2xl font-bold text-gray-700 mb-5">New VCV</h1>
 
 <h1 class="text-lg font-semibold text-gray-600 mb-1">Request Verifiable Experience credentials</h1>
-<p class="mb-2">
-	A verified experience, would issue you a verifiable credential which would be approved by your
+<p class="text-sm mb-5">
+	A verified experience would issue you a verifiable credential which would be approved by your
 	place of work. Any pending verified experience would automatically be added to your VCV once
-	approved by your colleague
+	approved by your colleague.
 </p>
-
 <Button on:click={() => (showExperienceModal = true)} color="white"
-	>Request Verfied Experience</Button
+	>Request Verified Experience</Button
 >
 
 {#if experiences.length > 0}

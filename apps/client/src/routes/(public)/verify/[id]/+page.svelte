@@ -15,30 +15,34 @@
 	});
 </script>
 
-<div class="px-10 py-10 flex gap-2">
-	<Card class="min-w-[50%]">
-		<div class="py-10 px-10">
-			<BadgeCheckSolid size="xl"></BadgeCheckSolid>
-			<h1 class="text-3xl font-bold mt-2 text-gray-900">This CV is Valid!</h1>
-
-			<div class="flex flex-col gap-2 mt-5">
-				<p>
-					This CV has been generated using VCV, VCV uses verifiable credentials, so all claims
-					present on this CV about experience, certifications and education have been digitally
-					signed
-				</p>
-
-				<p>
-					All experiences have been signed by a colleague of the user using their company issued
-					email
-				</p>
+<div class="px-5 py-5 flex flex-col gap-5">
+	<Card class="w-full">
+		<div class="flex flex-col items-center w-full">
+			<div class="w-full flex items-center justify-center">
+				<img class="size-48" src="/images/Logo.png" alt="" />
+			</div>
+			<div class=" px-5 w-full">
+				<div class="flex items-center w-full justify-center">
+					<BadgeCheckSolid color="#9187cd" size="lg"></BadgeCheckSolid>
+					<h1 class="text-xl font-semibold text-gray-900">This CV is Valid!</h1>
+				</div>
+				<div class="flex flex-col gap-2 mt-5">
+					<p>
+						This CV has been generated using VCV. VCV uses verifiable credentials, so all claims
+						present on this CV about experience, certifications and education have been digitally
+						signed.
+					</p>
+					<p>
+						All experiences have been signed by a colleague of the user using their company issued
+						email.
+					</p>
+				</div>
 			</div>
 		</div>
 	</Card>
-	<Card class="min-w-[50%]">
-		{#if cv}
+	{#if cv}
+		<Card class="min-w-[50%]">
 			<CvPreview
-				cvId={cv.id}
 				name={cv.name}
 				credentials={cv.credentials}
 				role={cv.jobTitle}
@@ -46,7 +50,8 @@
 				linkedin={cv.contacts.linkedin}
 				phoneNum={cv.contacts.phone}
 				email={cv.contacts.email}
+				cvId={cv.id}
 			></CvPreview>
-		{/if}
-	</Card>
+		</Card>
+	{/if}
 </div>
