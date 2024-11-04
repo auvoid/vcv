@@ -15,7 +15,7 @@
 	});
 </script>
 
-<div class="px-5 py-5 flex flex-col gap-5">
+<div class="px-5 py-5 flex gap-5">
 	<Card class="w-full">
 		<div class="flex flex-col items-center w-full">
 			<div class="w-full flex items-center justify-center">
@@ -24,7 +24,7 @@
 			<div class=" px-5 w-full">
 				<div class="flex items-center w-full justify-center">
 					<BadgeCheckSolid color="#9187cd" size="lg"></BadgeCheckSolid>
-					<h1 class="text-xl font-semibold text-gray-900">This CV is Valid!</h1>
+					<h1 class="text-xl font-semibold text-gray-900">This CV has been Verified!</h1>
 				</div>
 				<div class="flex flex-col gap-2 mt-5">
 					<p>
