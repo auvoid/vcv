@@ -103,7 +103,9 @@
 													>Edit VCV</DropdownItem
 												>
 												<DropdownItem on:click={() => handleDelete(cv.id)}>Delete VCV</DropdownItem>
-												<DropdownItem>Download VCV</DropdownItem>
+												<DropdownItem on:click={() => handleDownloadClick(cv)}
+													>Download VCV</DropdownItem
+												>
 											</Dropdown>
 										</button>
 									</div>
