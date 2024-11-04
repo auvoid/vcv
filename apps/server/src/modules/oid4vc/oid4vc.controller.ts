@@ -210,8 +210,7 @@ export class Oid4vcController {
         pinRequired: false,
       },
       {
-        experienceId: experienceId.id,
-        state: session.id,
+        state: `${experienceId}::${session.id}`,
       },
     );
     const offerExists = await this.credOfferService.findById(experienceId);
@@ -246,12 +245,10 @@ export class Oid4vcController {
       policies: { aud: false },
       resolver,
     });
-    const experience = await this.experienceService.findById(
-      payload.experienceId,
-      {
-        cv: { user: true },
-      },
-    );
+    const [experienceId, sessionId] = payload.state.split('::');
+    const experience = await this.experienceService.findById(experienceId, {
+      cv: { user: true },
+    });
     if (experience.status !== 'approved')
       throw new BadRequestException('experience not approved');
     const identity = await this.identityService.getAdminDid();
