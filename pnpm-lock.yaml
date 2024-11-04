@@ -25,6 +25,9 @@ importers:
       pdfjs-dist:
         specifier: ^4.8.69
         version: 4.8.69
+      svelte-loading-spinners:
+        specifier: ^0.3.6
+        version: 0.3.6
       svelte-qrcode-action:
         specifier: ^1.0.2
         version: 1.0.2(svelte@5.1.9)
@@ -8139,6 +8142,10 @@ packages:
       postcss-scss: 4.0.9(postcss@8.4.47)
       svelte: 5.1.9
     dev: true
+
+  /svelte-loading-spinners@0.3.6:
+    resolution: {integrity: sha512-mthHQ2TwiwzTWzbFry3CBnVEfzqPOD9WkVw84OfSYzHRq6N9wgQ+yv37u81uPeuLU/ZOIPqhujpXquB1aol5ZQ==}
+    dev: false
 
   /svelte-qrcode-action@1.0.2(svelte@5.1.9):
     resolution: {integrity: sha512-15xwEcg+RCPXGjH762sm5XVJu+5DA1YtqVttow4tnzhdsYXAAMF4eyHRYtCf+dG4sBwWpPmX/5LKUP4QZ6KKCQ==}

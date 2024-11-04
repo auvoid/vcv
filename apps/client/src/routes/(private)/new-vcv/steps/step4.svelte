@@ -37,7 +37,7 @@
 	}
 </script>
 
-<Modal bind:open={showExperienceModal}>
+<Modal title="Enter Experience Details" bind:open={showExperienceModal}>
 	<div class="flex flex-col gap-1">
 		<Input
 			label="Company Name"
@@ -46,12 +46,10 @@
 			placeholder="Doe Systems LLC"
 		></Input>
 	</div>
-
 	<div class="flex flex-col gap-1">
 		<Input label="Job Title" variant="text" bind:value={jobTitle} placeholder="Software Developer"
 		></Input>
 	</div>
-
 	<div class="flex flex-col gap-1">
 		<Input
 			label="Company URL"

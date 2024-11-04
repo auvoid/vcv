@@ -49,7 +49,6 @@
 		{/each}
 	</div>
 </Modal>
-
 <div class="flex flex-col items-center self-center">
 	<div class="aspect-[1/1.414] min-w-[595px] flex" bind:this={toPdf}>
 		<div class="w-[30%] h-full bg-cyan-900 py-10 px-4 flex flex-col justify-between items-center">
@@ -57,7 +56,6 @@
 				{#if email || phoneNum || linkedin}
 					<div>
 						<h1 class="font-semibold text-lg text-gray-50 mb-1">Contact</h1>
-
 						<div class="flex flex-col gap-[3px]">
 							<div class="text-xs font-medium text-gray-300">
 								{#if email}
@@ -70,7 +68,6 @@
 										<PhoneSolid></PhoneSolid>{phoneNum}
 									</div>
 								{/if}
-
 								{#if linkedin}
 									<div class="flex items-center gap-1">
 										<LinkedinSolid></LinkedinSolid>{linkedin}
@@ -232,7 +229,6 @@
 											</div>
 										</div>
 									</div>
-
 									<BadgeCheckSolid size="md" color="#184c64"></BadgeCheckSolid>
 								</div>
 							</Card>

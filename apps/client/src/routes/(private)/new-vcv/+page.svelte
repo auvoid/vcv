@@ -70,7 +70,7 @@
 			}
 			step++;
 		} else if (step === 3) {
-			addToast({ message: `your CV ${vcvName} has been saved` });
+			addToast({ message: `Your CV ${vcvName} has been saved` });
 			goto('/dashboard');
 		} else {
 			step++;
