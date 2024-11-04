@@ -40,7 +40,7 @@
 	<Loading></Loading>
 {:else}
 	<div class="flex flex-col gap-3">
-		{#if credentials.length > 0}
+		{#if credentials && credentials.length > 0}
 			{#each credentials as credential (credential.id)}
 				<div class="flex gap-5">
 					<Checkbox
