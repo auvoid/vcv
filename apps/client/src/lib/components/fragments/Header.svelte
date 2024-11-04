@@ -14,11 +14,12 @@
 	</div>
 	<div class="w-2/5">
 		<Search
+			disabled
 			class="w-full text-ellipsis rounded-lg py-[12px] focus:border-brand-green focus:ring-brand-green"
 			size="md"
 		></Search>
 	</div>
 	<div>
-		<Button color="yellow" on on:click={() => goto('/new-vcv')}>Create New VCV</Button>
+		<Button color="purple" on on:click={() => goto('/new-vcv')}>Create New VCV</Button>
 	</div>
 </header>

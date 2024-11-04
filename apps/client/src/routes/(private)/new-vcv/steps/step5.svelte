@@ -8,6 +8,6 @@
 
 <div class="flex flex-col gap-3">
 	<div class="flex gap-5">
-		<Button color="light-blue" on:click={onSavePdfClick}>Export to PDF</Button>
+		<Button color="white" on:click={onSavePdfClick}>Export to PDF</Button>
 	</div>
 </div>

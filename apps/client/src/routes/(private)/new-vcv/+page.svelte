@@ -1,16 +1,6 @@
 <script lang="ts">
-	import { Card, Hr, Li, Tooltip, Avatar } from 'flowbite-svelte';
-	import {
-		EnvelopeSolid,
-		PhoneSolid,
-		GithubSolid,
-		LinkedinSolid,
-		QrCodeOutline,
-		CheckCircleSolid,
-		ExclamationCircleSolid,
-		CloseCircleSolid,
-		ChevronLeftOutline
-	} from 'flowbite-svelte-icons';
+	import { Card } from 'flowbite-svelte';
+	import { ChevronLeftOutline } from 'flowbite-svelte-icons';
 	import Step1 from './steps/step1.svelte';
 	import Step2 from './steps/step2.svelte';
 	import Step3 from './steps/step3.svelte';
@@ -19,8 +9,6 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { apiClient } from '$lib/axios/axios';
-	import { formatDid } from '$lib/util/did';
-	import moment from 'moment';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { addToast } from '../../store';
@@ -33,16 +21,12 @@
 	let intro: string;
 	let email: string;
 	let phoneNum: string;
-	let github: string;
 	let linkedin: string;
-	let skills: string[];
 	let credentials: Record<string, any>[] = [];
 	let experiences: Record<string, any>[] = [];
 	let editing = false;
 	let cvId: string;
-
 	let makePdf: HTMLDivElement;
-
 	let handlePdfSave: () => void;
 
 	function handleGoBack() {
@@ -55,6 +39,20 @@
 
 	async function handleContinue() {
 		console.log(step);
+		if (step === 0) {
+			if (!vcvName || !name || !role)
+				return addToast({
+					type: 'error',
+					message: 'Please enter all the fields'
+				});
+		}
+		if (step === 1) {
+			if (!intro)
+				return addToast({
+					type: 'error',
+					message: 'Write a short introduction for this VCV'
+				});
+		}
 		if (step === 2) {
 			const payload = {
 				name,
@@ -72,7 +70,7 @@
 			}
 			step++;
 		} else if (step === 3) {
-			addToast({ message: `your CV ${vcvName} has been saved` });
+			addToast({ message: `Your CV ${vcvName} has been saved` });
 			goto('/dashboard');
 		} else {
 			step++;
@@ -81,7 +79,6 @@
 
 	onMount(async () => {
 		const html2pdf = (await import('html2pdf.js')).default;
-
 		let html2PdfWorker = html2pdf();
 		handlePdfSave = () => {
 			let opt = {
@@ -138,7 +135,7 @@
 				{/if}
 				{#if step < 4}
 					<div class="w-full flex justify-end">
-						<Button color="yellow" on:click={handleContinue}>Continue</Button>
+						<Button color="purple" on:click={handleContinue}>Continue</Button>
 					</div>
 				{/if}
 			</div>

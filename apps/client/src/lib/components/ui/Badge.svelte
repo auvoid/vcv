@@ -17,7 +17,7 @@
 			styling = 'dark:bg-brand-red_dark dark:text-red-300';
 			break;
 		case 'yellow':
-			styling = 'dark:bg-brand-yellow_darkest dark:text-brand-yellow';
+			styling = 'dark:bg-brand-purple_darkest dark:text-brand-purple';
 			break;
 		case 'green':
 			styling = 'dark:bg-brand-dark_green dark:text-brand-light_green';

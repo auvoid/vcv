@@ -20,7 +20,7 @@
 		<Input
 			variant="url"
 			label="LinkedIn"
-			placeholder="https://www.linkedin.com/in/ananyarana0411"
+			placeholder="https://www.linkedin.com/in/my-username"
 			bind:value={linkedin}
 		/>
 	</div>

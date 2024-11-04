@@ -23,12 +23,15 @@
 	<div>
 		<Header></Header>
 	</div>
-	<div class="flex gap-5 fixed w-full mt-[88px]">
+	<div class="gap-5 fixed w-full mt-[88px] lg:flex hidden">
 		<div>
 			<Sidebar></Sidebar>
 		</div>
 		<div class="w-full me-5">
 			<slot></slot>
 		</div>
+	</div>
+	<div class="flex h-screen w-screen items-center justify-center text-center lg:hidden">
+		This content currently does not support your screen.
 	</div>
 </div>

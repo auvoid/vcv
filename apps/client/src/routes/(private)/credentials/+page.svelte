@@ -20,12 +20,14 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
-	import { DotsHorizontalOutline } from 'flowbite-svelte-icons';
+	import { DotsHorizontalOutline, ExclamationCircleSolid } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 	import { onMount } from 'svelte';
 	import { formatDid } from '$lib/util/did';
+	import { goto } from '$app/navigation';
+	import Loading from '$lib/components/ui/Loading.svelte';
 
-	let selected: boolean = false;
+	let loading = false;
 	let selectedCredential: Record<string, any>;
 	let showAssignCredModal = false;
 	let showShareCredModal = false;
@@ -49,8 +51,6 @@
 		showAssignCredModal = true;
 	}
 
-	$: createAssignmentMap(credentials);
-
 	async function handleShareCredentials() {
 		const {
 			data: { uri }
@@ -68,8 +68,6 @@
 		};
 	}
 
-	$: console.log(credentialAssignmentsMap);
-
 	async function handleSaveAssignment() {
 		await apiClient.patch('/credentials', credentialAssignmentsMap);
 		await fetchCredentials();
@@ -77,8 +75,10 @@
 	}
 
 	async function fetchCredentials() {
+		loading = true;
 		const { data } = await apiClient.get('/credentials');
 		credentials = data;
+		loading = false;
 	}
 
 	async function obtainDemoCredentials() {
@@ -99,6 +99,9 @@
 	onMount(() => {
 		fetchCredentials();
 	});
+
+	$: createAssignmentMap(credentials);
+	$: console.log(credentialAssignmentsMap);
 </script>
 
 <Modal bind:open={showShareCredModal} title="Add More Credentials">
@@ -137,18 +140,28 @@
 			<TableHeadCell>Credential</TableHeadCell>
 			<TableHeadCell>Type</TableHeadCell>
 		</TableHead>
-
-		{#each credentials.filter((f) => f.type !== 'experience') as credential (credential.id)}
-			<TableBodyRow>
-				<TableBodyCell>{credential.name}</TableBodyCell>
-				<TableBodyCell>
-					<SelectInput {items} bind:value={credentialAssignmentsMap[credential.id]}></SelectInput>
-				</TableBodyCell>
-			</TableBodyRow>
-		{/each}
+		{#if credentials.filter((f) => f.type !== 'experience').length > 0}
+			{#each credentials.filter((f) => f.type !== 'experience') as credential (credential.id)}
+				<TableBodyRow>
+					<TableBodyCell>{credential.name}</TableBodyCell>
+					<TableBodyCell>
+						<SelectInput {items} bind:value={credentialAssignmentsMap[credential.id]}></SelectInput>
+					</TableBodyCell>
+				</TableBodyRow>
+			{/each}
+		{:else}
+			<TableBodyCell colspan={2}>
+				<div class="flex w-full flex-col items-center gap-4 px-10 py-[22px]">
+					<ExclamationCircleSolid class="h-[50px] w-[50px] text-gray-600"></ExclamationCircleSolid>
+					<p>Currently you don't have any Credentials. Add Credentials first.</p>
+				</div>
+			</TableBodyCell>
+		{/if}
 	</Table>
 	<div slot="footer">
-		<Button on:click={handleSaveAssignment}>Save Assigment</Button>
+		{#if credentials.filter((f) => f.type !== 'experience').length > 0}
+			<Button on:click={handleSaveAssignment}>Save Assigment</Button>
+		{/if}
 	</div>
 </Modal>
 
@@ -158,52 +171,66 @@
 			<h1 class="text-3xl font-bold text-gray-700 mb-10">Your Credentials</h1>
 			<div class="flex gap-2">
 				<Button color="white" on:click={handleShowAssignmentModal}>Edit Credential Types</Button>
-				<Button on:click={handleShareCredentials}>Add more credentials</Button>
+				<Button color="purple" on:click={handleShareCredentials}>Add Credentials</Button>
 			</div>
 		</div>
-		<Table divClass="w-full" striped>
-			<TableHead class="text-gray-500 bg-gray-100">
-				<TableHeadCell>Credential Name</TableHeadCell>
-				<TableHeadCell>Credential Type</TableHeadCell>
-				<TableHeadCell>Issued By</TableHeadCell>
-				<TableHeadCell>Created At</TableHeadCell>
-				<TableHeadCell></TableHeadCell>
-			</TableHead>
-			<TableBody>
-				{#each credentials as credential (credential.id)}
-					<TableBodyRow>
-						<TableBodyCell class="text-gray-600">{credential.name}</TableBodyCell>
-						<TableBodyCell class="text-gray-600">{credential.type ?? 'Uncategorized'}</TableBodyCell
-						>
-						<TableBodyCell class="text-gray-600">{formatDid(credential.decoded.iss)}</TableBodyCell>
-						<TableBodyCell class="text-gray-600">
-							<div class="flex justify-between">
-								{credential.decoded.exp
-									? moment(credential.decoded.exp * 1000).format('DD MMM YYYY')
-									: "Doesn't Expire"}
+		{#if loading}
+			<Loading></Loading>
+		{:else}
+			<Table divClass="w-full" striped>
+				<TableHead class="text-gray-500 bg-gray-100">
+					<TableHeadCell>Credential Name</TableHeadCell>
+					<TableHeadCell>Credential Type</TableHeadCell>
+					<TableHeadCell>Expires At</TableHeadCell>
+					<TableHeadCell></TableHeadCell>
+				</TableHead>
+				<TableBody>
+					{#if credentials.length > 0}
+						{#each credentials as credential (credential.id)}
+							<TableBodyRow>
+								<TableBodyCell class="text-gray-600">{credential.name}</TableBodyCell>
+								<TableBodyCell class="text-gray-600"
+									>{credential.type.charAt(0).toUpperCase() + credential.type.slice(1) ??
+										'Uncategorized'}
+								</TableBodyCell>
+								<TableBodyCell class="text-gray-600">
+									<div class="flex justify-between">
+										{credential.decoded.exp
+											? moment(credential.decoded.exp * 1000).format('DD MMM YYYY')
+											: "Doesn't Expire"}
+									</div>
+								</TableBodyCell>
+								<TableBodyCell class="text-gray-600">
+									<div class="flex justify-between">
+										<button class="text-primary-500 hover:text-primary-600">
+											<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
+											<Dropdown border class="py-2">
+												<DropdownItem on:click={() => (selectedCredential = credential)}
+													>View Credential</DropdownItem
+												>
+											</Dropdown>
+										</button>
+									</div>
+								</TableBodyCell>
+							</TableBodyRow>
+						{/each}
+					{:else}
+						<TableBodyCell colspan={5}>
+							<div class="flex w-full flex-col items-center gap-4 px-10 py-[22px]">
+								<ExclamationCircleSolid class="h-[100px] w-[100px] text-gray-600"
+								></ExclamationCircleSolid>
+								<p>You don't have any Credentials yet.</p>
 							</div>
 						</TableBodyCell>
-						<TableBodyCell class="text-gray-600">
-							<div class="flex justify-between">
-								<button class="text-primary-500 hover:text-primary-600">
-									<DotsHorizontalOutline class="h-5 w-5 text-gray-800" />
-									<Dropdown border class="py-2">
-										<DropdownItem on:click={() => (selectedCredential = credential)}
-											>View Credential</DropdownItem
-										>
-									</Dropdown>
-								</button>
-							</div>
-						</TableBodyCell>
-					</TableBodyRow>
-				{/each}
-			</TableBody>
-		</Table>
+					{/if}
+				</TableBody>
+			</Table>
+		{/if}
 	</Card>
 	<DocPreviewBar>
 		<div class="flex flex-col h-full px-3 py-3 overflow-auto">
 			{#if selectedCredential}
-				<div class="flex items-center justify-end mb-5">
+				<div class="flex items-center justify-end">
 					<CloseButton on:click={() => (selectedCredential = null)} />
 				</div>
 				<div class="flex flex-col gap-4">
@@ -233,7 +260,7 @@
 						</p>
 					</div>
 					{#each Object.keys(selectedCredential.decoded.vc.credentialSubject).filter((k) => k !== 'enrichment') as key (key)}
-						<div class="flex flex-col border-b-2 border-b-gray-300 pb-4">
+						<div class="flex flex-col border-b-2 border-b-gray-300 pb-4 last:border-b-0">
 							<h3 class="font-sm font-semibold text-gray-500">{key}</h3>
 							<p>
 								{selectedCredential.decoded.vc.credentialSubject[key]}
