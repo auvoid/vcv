@@ -12,7 +12,7 @@
 		<Input variant="text" label="Enter VCV Name" placeholder="My VCV" bind:value={vcvName} />
 	</div>
 	<div class="">
-		<Input variant="text" label="Enter Name" placeholder="Joe Biden" bind:value={name} />
+		<Input variant="text" label="Enter Name" placeholder="John Doe" bind:value={name} />
 	</div>
 	<div class="">
 		<Input variant="text" label="Enter Role" placeholder="Backend Developer" bind:value={role} />
