@@ -365,7 +365,10 @@ export class Oid4vcController {
         decoded: decodedVc,
         raw: cred.cred,
         user: user,
-        type: 'experience',
+        type:
+          decodedVc.vc.type[1] === 'University Degree'
+            ? 'education'
+            : 'certification',
       });
     }
 
