@@ -40,48 +40,52 @@
 	<Loading></Loading>
 {:else}
 	<div class="flex flex-col gap-3">
-		{#each credentials as credential (credential.id)}
-			<div class="flex gap-5">
-				<Checkbox
-					checked={selectedCredentials.map((e) => e.id).includes(credential.id)}
-					on:click={() => handleCheckCredential(credential)}
-				></Checkbox>
-				<Card padding="xs">
-					<div class="flex gap-5 justify-between items-center">
-						<div class="flex gap-3">
-							<Avatar
-								src={credential.decoded.vc.credentialSubject.enrichment
-									? credential.decoded.vc.credentialSubject.enrichment.logo_uri
-									: null}
-								rounded
-								size="md"
-								class="object-cover"
-							/>
-							<div class="flex flex-col items-start border-b-gray-300">
-								<h3 class="text-md font-semibold text-gray-500">{credential.name}</h3>
-								<Badge
-									color={credential.type === 'experience'
-										? 'green'
-										: credential.type === 'education'
-											? 'yellow'
-											: 'blue'}>{credential.type}</Badge
+		{#if credentials.length > 0}
+			{#each credentials as credential (credential.id)}
+				<div class="flex gap-5">
+					<Checkbox
+						checked={selectedCredentials.map((e) => e.id).includes(credential.id)}
+						on:click={() => handleCheckCredential(credential)}
+					></Checkbox>
+					<Card padding="xs">
+						<div class="flex gap-5 justify-between items-center">
+							<div class="flex gap-3">
+								<Avatar
+									src={credential.decoded.vc.credentialSubject.enrichment
+										? credential.decoded.vc.credentialSubject.enrichment.logo_uri
+										: null}
+									rounded
+									size="md"
+									class="object-cover"
+								/>
+								<div class="flex flex-col items-start border-b-gray-300">
+									<h3 class="text-md font-semibold text-gray-500">{credential.name}</h3>
+									<Badge
+										color={credential.type === 'experience'
+											? 'green'
+											: credential.type === 'education'
+												? 'yellow'
+												: 'blue'}>{credential.type}</Badge
+									>
+									<p class="text-sm">{formatDid(credential.decoded.iss)}</p>
+								</div>
+							</div>
+							<div>
+								<Button
+									color="white"
+									on:click={() => {
+										showCredModal = true;
+										cred = credential;
+									}}>View</Button
 								>
-								<p class="text-sm">{formatDid(credential.decoded.iss)}</p>
 							</div>
 						</div>
-						<div>
-							<Button
-								color="white"
-								on:click={() => {
-									showCredModal = true;
-									cred = credential;
-								}}>View</Button
-							>
-						</div>
-					</div>
-				</Card>
-			</div>
-		{/each}
+					</Card>
+				</div>
+			{/each}
+		{:else}
+			<h1>You don't have any credentials :(</h1>
+		{/if}
 	</div>
 {/if}
 
