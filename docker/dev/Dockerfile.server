@@ -6,12 +6,12 @@ RUN corepack enable
 FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-npm i -g corepack@latest
+RUN npm i -g corepack@latest
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 FROM base AS server
 COPY --from=build /usr/src/app /usr/src/app
-npm i -g corepack@latest
+RUN npm i -g corepack@latest
 WORKDIR /usr/src/app
 RUN cd ./packages/dtos && pnpm build && cd ../..
 EXPOSE 1209
